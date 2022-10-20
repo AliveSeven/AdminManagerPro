@@ -1,4 +1,16 @@
-# init
+# 工程简介
+
+前后端分离的管理系统，纯手写，采用的技术栈基本都是新的、
+
+## 技术栈
+
+**前端：**Vue3.2全家桶 + Vite + TypeScript + Pinia + Element-Plus + Echarts + Less
+
+**后端：**SpringBoot2 + Mybatis-Plus + Hutool + JWT + MySql
+
+
+
+# 运行事项
 
 This template should help get you started developing with Vue 3 in Vite.
 
