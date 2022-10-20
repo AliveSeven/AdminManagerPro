@@ -1,0 +1,21 @@
+@font-face {
+  font-family: ZhuZiAYuanJWD;
+  src: url(https://cdn.cbd.int/anzhiyu-blog@1.1.6/fonts/ZhuZiAWan.woff2);
+  font-display: swap;
+  font-weight: lighter;
+}
+
+body,
+html {
+  height: 100%; /* 高度设定 */
+  margin: 0;
+  padding: 0;
+  font-weight: 400;
+  overflow: hidden;
+   background-color: rgb(241, 241, 241); 
+  /* CSS3 抗锯齿形 让文字显示的更加清晰 */
+  -webkit-font-smoothing: antialiased;
+  /* font-family: ZhuZiAYuanJWD; */
+  line-height: 1.5;
+  font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,\5fae\8f6f\96c5\9ed1,Arial,sans-serif;
+}
