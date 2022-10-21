@@ -89,7 +89,7 @@ function submitForm(inputData : any){
         }else if(res.code === '600'){
             ElMessage({
                 message: '用户名或密码错误',
-                type: 'success',
+                type: 'error',
             })
         }
     })

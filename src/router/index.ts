@@ -56,6 +56,21 @@ const router = createRouter({
       component: () => import('@/views/Login.vue')
     },
     {
+      path : '/404',
+      name : '404',
+      component : () => import('@/views/Exception/404.vue')
+    },
+    {
+      path : '/403',
+      name : '403',
+      component : () => import('@/views/Exception/403.vue')
+    },
+    {
+      path : '/500',
+      name : '500',
+      component : () => import('@/views/Exception/500.vue')
+    },
+    {
       path: '/about',
       name: 'About',
       // route level code-splitting

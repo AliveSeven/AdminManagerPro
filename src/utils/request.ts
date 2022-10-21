@@ -53,6 +53,13 @@ request.interceptors.response.use(
             // });
             router.push("/login")
         }
+        if (res.code === '404') {
+            // ElementUI.Message({
+            //     message: res.msg,
+            //     type: 'error'
+            // });
+            router.push("/404")
+        }
         return res;
     },
     error => {
