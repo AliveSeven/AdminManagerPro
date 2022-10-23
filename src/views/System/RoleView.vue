@@ -1,9 +1,9 @@
 <template>
-    <div class="menuView">
+    <div class="roleView">
         <div class="form">
             <div class="phone">
-                <span>菜单名称</span>
-                <el-input v-model="menuName" class="w-50 m-2" placeholder="请输入菜单名称" :suffix-icon="Search" />
+                <span>角色名称</span>
+                <el-input v-model="Pages.InputRolename" class="w-50 m-2" placeholder="请输入菜单名称" :suffix-icon="Search" />
             </div>
             <el-button type="primary" :icon="Search" class="form-btn" @click="">搜索</el-button>
 
@@ -36,12 +36,12 @@
         <div class="pager">
           <el-pagination 
           small background layout="total, sizes, prev, pager, next, jumper" 
-          :page-size="5"
+          :page-size="Pages.pageSize"
           :page-sizes="[5, 10, 20, 30]"
-          :current-page="1"
-          @current-change=""
-          @size-change=""  
-          :total="100" 
+          :current-page="Pages.pageNum"
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"  
+          :total="total" 
           class="mt-4" />
         </div>
 
@@ -65,6 +65,7 @@
 import { reactive, ref } from 'vue'
 import { ElMessage, ElTable } from 'element-plus'
 import { Search, Menu, Plus, Remove, } from '@element-plus/icons-vue'
+import { getRolePage } from '@/utils/api';
 
 const tableData: any = ref([{
         id: 100,
@@ -73,6 +74,18 @@ const tableData: any = ref([{
         flag: '是',
     }
 ])
+
+// 分页数据
+// 角色总数，暂定为20个
+var total = ref(20)
+
+// 页码和每页User数量form:
+var Pages = reactive({
+  pageNum : 1,
+  pageSize : 10,
+  InputRolename : '',
+
+})
 
 interface Tree {
     label: string
@@ -107,21 +120,43 @@ const data: Tree[] = [
   },
 ]
 
-// 输入的菜单名
-const menuName : any = ref('')
 // 菜单管理可视化
 const dialogMenuVisible : any = ref(false)
 
-//  {
-//     DashBorad : 'DashBorad',
-//     System : '系统管理',
-//     User : '用户管理',
-//     Role : '角色管理',
-//     Department : '部门管理'
-//   }
-function getMenuInfo() {
+// 调用获取分页信息函数
+getRolePageInfo(Pages.pageNum , Pages.pageSize ,Pages.InputRolename)
 
+// 获取分页信息
+function getRolePageInfo(pageNum : number, pageSize : number, name : string) {
+  getRolePage(pageNum,pageSize,name).then(res =>{
+    if(res.code === '200'){
+      tableData.value = res.data.records
+      total.value = res.data.total
+      console.log(res)
+    }
+  }).catch((err) =>{
+    console.log('获取数据报错',err)
+  })
 }
+
+// 分页操作触发函数
+// 通过输入的信息获取分页信息，搜索
+function getPageInfoByInput(){
+    getRolePageInfo(Pages.pageNum , Pages.pageSize, Pages.InputRolename)
+}
+
+// 页数更改事件
+function handleCurrentChange(val : number){
+  Pages.pageNum = val
+  getPageInfoByInput()
+}
+
+// 页Size改变
+function handleSizeChange(val : number){
+  Pages.pageSize = val
+  getPageInfoByInput()
+}
+
 
 const handleNodeClick = (data: Tree) => {
   console.log(data)
@@ -155,7 +190,7 @@ const handleNodeClick = (data: Tree) => {
       }
   }
 }
-.menuView {
+.roleView {
     background-color: white;
     padding-bottom: 5px;
 }

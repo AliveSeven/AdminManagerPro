@@ -69,3 +69,15 @@ export function login(data : any){
         data
     })
 }
+
+// 角色分页信息
+export function getRolePage(pageNum : number, pageSize : number, name : string){
+    return request({
+        url : '/role/page' ,
+        params : {
+            pageNum,
+            pageSize,
+            name
+        }
+    })
+}

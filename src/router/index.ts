@@ -14,9 +14,35 @@ const router = createRouter({
       redirect : '/login',
       children : [
         {
-          path: 'userTable',
-          name: 'UserTable',
-          component: () => import('@/views/User/UserTableView.vue')
+          path : 'dashBoard',
+          name : 'DashBoard',
+          component : () => import('@/views/System/DashBoard.vue')
+        },
+        {
+          path : 'system',
+          name : 'System',
+          children : [
+            {
+              path: 'userTable',
+              name: 'UserTable',
+              component: () => import('@/views/User/UserTableView.vue')
+            },
+            {
+              path : 'menu',
+              name : 'Menu',
+              component : () => import('@/views/System/MenuView.vue')
+            },
+            {
+              path : 'role',
+              name : 'Role',
+              component : () => import('@/views/System/RoleView.vue')
+            },
+            {
+              path : 'file',
+              name : 'File',
+              component : () => import('@/views/System/FileView.vue')
+            }
+          ]
         },
         {
           path : 'department',
@@ -28,26 +54,6 @@ const router = createRouter({
           name : 'UserInfo',
           component : () => import('@/views/User/UserInfo.vue')
         },
-        {
-          path : 'dashBoard',
-          name : 'DashBoard',
-          component : () => import('@/views/System/DashBoard.vue')
-        },
-        {
-          path : 'menu',
-          name : 'Menu',
-          component : () => import('@/views/System/MenuView.vue')
-        },
-        {
-          path : 'role',
-          name : 'Role',
-          component : () => import('@/views/System/RoleView.vue')
-        },
-        {
-          path : 'file',
-          name : 'File',
-          component : () => import('@/views/System/FileView.vue')
-        }
       ]
     },
     {

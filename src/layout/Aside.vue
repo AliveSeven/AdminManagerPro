@@ -15,21 +15,21 @@
           <span v-show="!state.isCollapse" >Admin Work Pro</span>
         </div>
       </div>
-      <el-menu-item index="dashBoard">
+      <el-menu-item index="/home/dashBoard">
         <el-icon><PieChart /></el-icon>
         <span class="title">主控台</span>
       </el-menu-item>
-      <el-sub-menu index="2">
+      <el-sub-menu index="/home/system">
         <template #title>
           <el-icon><Setting /></el-icon>
-          <span class="title">系统管理</span>
+          <span class="title" >系统管理</span>
         </template>
-        <el-menu-item index="role"><el-icon><Operation /></el-icon>角色管理</el-menu-item>
-        <el-menu-item index="usertable"><el-icon><Operation /></el-icon>用户管理</el-menu-item>
-        <el-menu-item index="menu"><el-icon><Operation /></el-icon>菜单管理</el-menu-item>
-        <el-menu-item index="file"><el-icon><Operation /></el-icon>文件管理</el-menu-item>
+        <el-menu-item index="/home/system/role"><el-icon><Operation /></el-icon>角色管理</el-menu-item>
+        <el-menu-item index="/home/system/usertable"><el-icon><Operation /></el-icon>用户管理</el-menu-item>
+        <el-menu-item index="/home/system/menu"><el-icon><Operation /></el-icon>菜单管理</el-menu-item>
+        <el-menu-item index="/home/system/file"><el-icon><Operation /></el-icon>文件管理</el-menu-item>
       </el-sub-menu>
-      <el-menu-item index="userInfo" class="title">
+      <el-menu-item index="/home/userInfo" class="title">
         <el-icon><User /></el-icon>
         <span class="title">个人信息</span>
       </el-menu-item>
