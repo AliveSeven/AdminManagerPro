@@ -16,7 +16,7 @@
         </div>
 
         <div class="form-table">
-            <el-table :data="tableData" :border="true" @current-change="" ref="singleTableRef" :header-cell-style="{ background : '#F5F7FA'}" style="width: 98%;margin-left: 10px;height: 67vh;">
+            <el-table :data="tableData" :border="true" @current-change="TableCurrentChange" ref="singleTableRef" :header-cell-style="{ background : '#F5F7FA'}" style="width: 98%;margin-left: 10px;height: 67vh;">
                 <!-- <el-table-column type="selection" width="55" /> -->
                 <el-table-column prop="id" label="角色ID"/>
                 <el-table-column prop="name" label="角色名称"  />
@@ -48,11 +48,11 @@
         <!-- 菜单管理的对话框 -->
         <div class="dialog-menu">
           <el-dialog v-model="dialogMenuVisible" title="菜单管理">
-            <el-tree :props="props" :data="data" show-checkbox @node-click="handleNodeClick"/>
+            <el-tree :props="props" :data="data" show-checkbox node-key="id" @check="handleNodeClick"/>
             <template #footer>
               <span class="dialog-footer">
                 <el-button @click="dialogMenuVisible = false">Cancel</el-button>
-                <el-button type="primary" @click=""
+                <el-button type="primary" @click="handleNodeConfirm(currentRow.id)"
                   >Confirm</el-button>
               </span>
             </template>
@@ -65,7 +65,7 @@
 import { reactive, ref } from 'vue'
 import { ElMessage, ElTable } from 'element-plus'
 import { Search, Menu, Plus, Remove, } from '@element-plus/icons-vue'
-import { getRolePage } from '@/utils/api';
+import { getRolePage , roleMenu } from '@/utils/api';
 
 const tableData: any = ref([{
         id: 100,
@@ -90,12 +90,29 @@ var Pages = reactive({
 interface Tree {
     label: string
     children?: Tree[]
+    $treeNodeId? : number
 }
 
 const props = {
   label: 'label',
   children: 'children',
 }
+
+// 传入的角色id
+const currentRow = ref({
+  id : 100
+})
+
+// 传入的菜单
+const menuArray : any = ref([])
+
+// 传入半选中的菜单
+const menuHalfArray : any = ref([])
+
+// 传入的菜单id数组
+const menuArrayIds : any = ref({
+  menuIds : []
+})
 
 const data: Tree[] = [
   {
@@ -132,7 +149,7 @@ function getRolePageInfo(pageNum : number, pageSize : number, name : string) {
     if(res.code === '200'){
       tableData.value = res.data.records
       total.value = res.data.total
-      console.log(res)
+      // console.log(res)
     }
   }).catch((err) =>{
     console.log('获取数据报错',err)
@@ -157,9 +174,64 @@ function handleSizeChange(val : number){
   getPageInfoByInput()
 }
 
+// 单选，表格选择事件
+function TableCurrentChange(val : any){
+  // 这样给reactive赋值可以保证页面会重新渲染
+  Object.assign(currentRow,val)
+  console.log('currentRow',currentRow)
+  // currentRow  = val
+}
 
-const handleNodeClick = (data: Tree) => {
-  console.log(data)
+
+// 点击菜单管理多选框
+const handleNodeClick = (nodeObj : any , SelectedObj : any) => {
+  // console.log(SelectedObj.checkedNodes)
+  if(SelectedObj.checkedNodes){
+    menuArray.value = SelectedObj.checkedNodes
+    // Object.assign(menuArray , SelectedObj.checkedNodes)
+    // console.log(menuArray)
+  }
+  // 半选中菜单赋值
+  if(SelectedObj.halfCheckedNodes){
+    menuHalfArray.value = SelectedObj.halfCheckedNodes
+  }
+}
+
+// 菜单管理确认
+function handleNodeConfirm(roleId : number){
+  // 加入选入的id
+  menuArray.value.forEach((element : any) => {
+      if(menuArrayIds.menuIds.indexOf(element.$treeNodeId) === -1){
+        menuArrayIds.menuIds.push(element.$treeNodeId)
+      }
+      // console.log('没有加入半选中：',menuArrayIds)
+  });
+  // 加入半选中菜单id
+  if(menuHalfArray.length != 0){
+    menuHalfArray.value.forEach((element : any) =>{
+      if(menuHalfArray.value.indexOf(element.$treeNodeId) === -1){
+        menuArrayIds.menuIds.push(element.$treeNodeId)
+      }
+      // console.log('加入半选中：',menuArrayIds)
+    })
+  }
+  // 分配权限函数
+  roleMenu(roleId , menuArrayIds ).then(res =>{
+    if(res.code === '200'){
+      console.log(res)
+      ElMessage({
+        message: '分配角色菜单权限成功',
+        type: 'success',
+      })
+    }
+  }).catch(err =>{
+    console.log(err)
+  })
+  // 清空数据
+  // setTimeout(() => {
+  //   menuArrayIds.value = []
+  // }, 500);
+  dialogMenuVisible.value = false
 }
 
 </script>

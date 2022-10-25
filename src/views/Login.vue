@@ -82,7 +82,7 @@ function submitForm(inputData : any){
                 type: 'success',
             })
             router.push({
-                path : '/home/usertable'
+                path : '/home/dashboard'
             })
             localStorage.setItem("user" , JSON.stringify(res.data));
             // 将用户数据设定在缓存中

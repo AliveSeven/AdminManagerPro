@@ -81,3 +81,13 @@ export function getRolePage(pageNum : number, pageSize : number, name : string){
         }
     })
 }
+
+// 角色菜单管理权限分配
+export function roleMenu(roleId : number , menuIds : any){
+    return request({
+        url : `roleMenu/${roleId}`,
+        params : {
+            menuIds
+        }
+    })
+}
