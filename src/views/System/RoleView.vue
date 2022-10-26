@@ -1,7 +1,7 @@
 <template>
     <div class="roleView">
         <div class="form">
-            <div class="phone">
+            <div class="name">
                 <span>角色名称</span>
                 <el-input v-model="Pages.InputRolename" class="w-50 m-2" placeholder="请输入菜单名称" :suffix-icon="Search" />
             </div>
@@ -24,7 +24,8 @@
                 <el-table-column prop="flag" label="唯一标识"  />
                 <el-table-column label="操作" width="250">
                     <template #default="scope">
-                        <el-button size="small" @click="dialogMenuVisible = true" type="info" :icon="Menu" plain>菜单管理</el-button>
+                        <!-- 通过插槽scope获取当前行的数据，scope.row.id表示获取当前行的角色id -->
+                        <el-button size="small" @click="getRoleMenuInfo(scope.row.id)" type="info" :icon="Menu" plain>菜单管理</el-button>
                         <el-button size="small" @click="" type="warning" plain>编辑</el-button>
                         <el-button size="small" type="danger" @click="">删除</el-button>
                     </template>
@@ -41,14 +42,14 @@
           :current-page="Pages.pageNum"
           @current-change="handleCurrentChange"
           @size-change="handleSizeChange"  
-          :total="total" 
+          :total="total"
           class="mt-4" />
         </div>
 
         <!-- 菜单管理的对话框 -->
         <div class="dialog-menu">
           <el-dialog v-model="dialogMenuVisible" title="菜单管理">
-            <el-tree :props="props" :data="data" show-checkbox node-key="id" @check="handleNodeClick"/>
+            <el-tree :props="props" ref="treeRef" :data="data" show-checkbox node-key="id" @check="handleNodeClick" />
             <template #footer>
               <span class="dialog-footer">
                 <el-button @click="dialogMenuVisible = false">Cancel</el-button>
@@ -63,9 +64,11 @@
 
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
-import { ElMessage, ElTable } from 'element-plus'
+import { ElMessage, ElTable, ElTree } from 'element-plus'
 import { Search, Menu, Plus, Remove, } from '@element-plus/icons-vue'
-import { getRolePage , roleMenu } from '@/utils/api';
+import { getRolePage , roleMenu, getRoleMenu } from '@/utils/api';
+
+const treeRef = ref<InstanceType<typeof ElTree>>()
 
 const tableData: any = ref([{
         id: 100,
@@ -84,11 +87,11 @@ var Pages = reactive({
   pageNum : 1,
   pageSize : 10,
   InputRolename : '',
-
 })
 
 interface Tree {
     label: string
+    id : number
     children?: Tree[]
     $treeNodeId? : number
 }
@@ -115,25 +118,34 @@ const menuArrayIds : any = ref([])
 const data: Tree[] = [
   {
     label: '主控台',
+    id : 1
   },
   {
     label: '系统管理',
+    id : 2,
     children: [
       {
         label: '角色管理',
+        id : 3
       },
       {
         label: '用户管理',
+        id : 4
       },
       {
         label: '菜单管理',
+        id : 5
       },
       {
         label: '文件管理',
+        id : 6
       },
     ],
   },
 ]
+
+// 当前角色已有的菜单权限ID
+const currentRoleMenu = ref()
 
 // 菜单管理可视化
 const dialogMenuVisible : any = ref(false)
@@ -187,7 +199,7 @@ const handleNodeClick = (nodeObj : any , SelectedObj : any) => {
   if(SelectedObj.checkedNodes){
     menuArray.value = SelectedObj.checkedNodes
     // Object.assign(menuArray , SelectedObj.checkedNodes)
-    // console.log(menuArray)
+    // console.log('menuArray',menuArray)
   }
   // 半选中菜单赋值
   if(SelectedObj.halfCheckedNodes){
@@ -199,20 +211,22 @@ const handleNodeClick = (nodeObj : any , SelectedObj : any) => {
 function handleNodeConfirm(roleId : number){
   // 加入选入的id
   menuArray.value.forEach((element : any) => {
-      if(menuArrayIds.value.indexOf(element.$treeNodeId) === -1){
-        menuArrayIds.value.push(element.$treeNodeId)
+      if(menuArrayIds.value.indexOf(element.id) === -1){
+        menuArrayIds.value.push(element.id)
       }
       // console.log('没有加入半选中：',menuArrayIds)
   });
-  // 加入半选中菜单id
-  if(menuHalfArray.length != 0){
-    menuHalfArray.value.forEach((element : any) =>{
-      if(menuHalfArray.value.indexOf(element.$treeNodeId) === -1){
-        menuArrayIds.value.push(element.$treeNodeId)
-      }
-      // console.log('加入半选中：',menuArrayIds)
-    })
-  }
+
+  // 加入半选中菜单id，暂时不加入
+
+  // if(menuHalfArray.length != 0){
+  //   menuHalfArray.value.forEach((element : any) =>{
+  //     if(menuHalfArray.value.indexOf(element.id) === -1){
+  //       menuArrayIds.value.push(element.id)
+  //     }
+  //     // console.log('加入半选中：',menuArrayIds)
+  //   })
+  // }
 
   // 分配权限函数
   roleMenu(roleId , menuArrayIds.value ).then(res =>{
@@ -231,6 +245,30 @@ function handleNodeConfirm(roleId : number){
   //   menuArrayIds.value = []
   // }, 500);
   dialogMenuVisible.value = false
+}
+
+// 获取角色有的权限id
+async function getRoleMenuInfo(roleId : number){
+  dialogMenuVisible.value = true
+  await getRoleMenu(roleId).then(res =>{
+    if(res.code === '200'){
+      currentRoleMenu.value = res.data
+      handleSetNodes(currentRoleMenu)
+    }
+  })
+}
+
+// 给当前角色现有的菜单权限打个勾
+const handleSetNodes = (menuIds : any) => {
+  const nodes : any = ref([])
+  menuIds.value.forEach((element : any) => {
+    const node : any = {
+      id : element
+    }
+    nodes.value.push(node)
+  });
+  // console.log(nodes)
+  treeRef.value!.setCheckedNodes(nodes.value,false)
 }
 
 </script>

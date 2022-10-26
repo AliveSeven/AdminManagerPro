@@ -36,6 +36,9 @@ export const useState = defineStore('main',{
       Object.assign(this.currentUserInfo , UserData)
     }
 
+    // 获取当前用户的权限菜单
+    
+
   }
 
 })

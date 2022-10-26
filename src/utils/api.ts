@@ -91,3 +91,11 @@ export function roleMenu(roleId : number , data : any){
         data
     })
 }
+
+// 获取角色所有的菜单权限id
+export function getRoleMenu(roleId : number){
+    return request({
+        url : `role/roleMenu/${roleId}`,
+        method : 'get',
+    })
+}
