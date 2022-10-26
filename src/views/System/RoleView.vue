@@ -110,9 +110,7 @@ const menuArray : any = ref([])
 const menuHalfArray : any = ref([])
 
 // 传入的菜单id数组
-const menuArrayIds : any = ref({
-  menuIds : []
-})
+const menuArrayIds : any = ref([])
 
 const data: Tree[] = [
   {
@@ -177,8 +175,8 @@ function handleSizeChange(val : number){
 // 单选，表格选择事件
 function TableCurrentChange(val : any){
   // 这样给reactive赋值可以保证页面会重新渲染
-  Object.assign(currentRow,val)
-  console.log('currentRow',currentRow)
+  currentRow.value = val
+  // console.log('currentRow',currentRow.value.id)
   // currentRow  = val
 }
 
@@ -201,8 +199,8 @@ const handleNodeClick = (nodeObj : any , SelectedObj : any) => {
 function handleNodeConfirm(roleId : number){
   // 加入选入的id
   menuArray.value.forEach((element : any) => {
-      if(menuArrayIds.menuIds.indexOf(element.$treeNodeId) === -1){
-        menuArrayIds.menuIds.push(element.$treeNodeId)
+      if(menuArrayIds.value.indexOf(element.$treeNodeId) === -1){
+        menuArrayIds.value.push(element.$treeNodeId)
       }
       // console.log('没有加入半选中：',menuArrayIds)
   });
@@ -210,13 +208,14 @@ function handleNodeConfirm(roleId : number){
   if(menuHalfArray.length != 0){
     menuHalfArray.value.forEach((element : any) =>{
       if(menuHalfArray.value.indexOf(element.$treeNodeId) === -1){
-        menuArrayIds.menuIds.push(element.$treeNodeId)
+        menuArrayIds.value.push(element.$treeNodeId)
       }
       // console.log('加入半选中：',menuArrayIds)
     })
   }
+
   // 分配权限函数
-  roleMenu(roleId , menuArrayIds ).then(res =>{
+  roleMenu(roleId , menuArrayIds.value ).then(res =>{
     if(res.code === '200'){
       console.log(res)
       ElMessage({
