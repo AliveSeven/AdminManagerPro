@@ -178,6 +178,9 @@
 import * as echarts from 'echarts';
 import { onMounted } from 'vue'
 import countTo from '@/components/CountTo';
+import { useState } from '@/stores/state'
+
+const state = useState()
 
 onMounted(() => {
     var app: any = {};

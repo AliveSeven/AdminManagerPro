@@ -56,7 +56,10 @@ import { reactive } from 'vue'
 import { ElMessage , FormRules } from 'element-plus'
 import { User , Lock } from '@element-plus/icons-vue'
 import { login } from '@/utils/api'
+import { useState } from '@/stores/state'
 import router from '@/router';
+
+const state = useState()
 
 const ruleForm = reactive({
     username : 'admin',
@@ -84,8 +87,10 @@ function submitForm(inputData : any){
             router.push({
                 path : '/home/dashboard'
             })
-            localStorage.setItem("user" , JSON.stringify(res.data));
             // 将用户数据设定在缓存中
+            localStorage.setItem("user" , JSON.stringify(res.data));
+            // 获取当前用户的菜单权限
+            state.getCurrentUserMenu()
         }else if(res.code === '600'){
             ElMessage({
                 message: '用户名或密码错误',
