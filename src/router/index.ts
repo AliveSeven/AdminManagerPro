@@ -45,11 +45,6 @@ const router = createRouter({
           ]
         },
         {
-          path : 'department',
-          name : 'Department',
-          component : () => import('@/views/User/Department.vue')
-        },
-        {
           path : 'userInfo',
           name : 'UserInfo',
           component : () => import('@/views/User/UserInfo.vue')
@@ -64,27 +59,27 @@ const router = createRouter({
     {
       path : '/404',
       name : '404',
-      component : () => import('@/views/Exception/404.vue')
+      component : () => import('@/views/Exception/Ex404.vue')
     },
     {
       path : '/403',
       name : '403',
-      component : () => import('@/views/Exception/403.vue')
+      component : () => import('@/views/Exception/Ex403.vue')
     },
     {
       path : '/500',
       name : '500',
-      component : () => import('@/views/Exception/500.vue')
+      component : () => import('@/views/Exception/Ex500.vue')
     },
-    {
-      path: '/about',
-      name: 'About',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    }
   ]
 })
+
+const setRouter = () =>{
+  const storeMenus = localStorage.getItem("currentMenuInfo") ? JSON.parse(localStorage.getItem("currentMenuInfo") as string) : null
+  if(storeMenus != null){
+    
+  }
+}
+
 
 export default router

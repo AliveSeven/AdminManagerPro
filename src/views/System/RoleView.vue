@@ -66,7 +66,15 @@
 import { reactive, ref } from 'vue'
 import { ElMessage, ElTable, ElTree } from 'element-plus'
 import { Search, Menu, Plus, Remove, } from '@element-plus/icons-vue'
-import { getRolePage , roleMenu, getRoleMenu } from '@/utils/api';
+import { getRolePage , roleMenu, getRoleMenu, getRoleMenuByUserId } from '@/utils/api';
+import { useState } from '@/stores/state'
+import { useRouter } from 'vue-router'
+
+// 状态管理器
+const state = useState()
+
+// 路由管理器,router是用来操作路由的
+const router = useRouter()
 
 const treeRef = ref<InstanceType<typeof ElTree>>()
 
@@ -94,11 +102,13 @@ interface Tree {
     id : number
     children?: Tree[]
     $treeNodeId? : number
+    disabled? : boolean
 }
 
 const props = {
   label: 'label',
   children: 'children',
+  disabled: 'disabled',
 }
 
 // 传入的角色id
@@ -118,7 +128,8 @@ const menuArrayIds : any = ref([])
 const data: Tree[] = [
   {
     label: '主控台',
-    id : 1
+    id : 1,
+    disabled : true,
   },
   {
     label: '系统管理',
@@ -141,6 +152,11 @@ const data: Tree[] = [
         id : 6
       },
     ],
+  },
+  {
+    label: '个人信息',
+    id : 7,
+    disabled : true,
   },
 ]
 
@@ -231,10 +247,26 @@ function handleNodeConfirm(roleId : number){
   // 分配权限函数
   roleMenu(roleId , menuArrayIds.value ).then(res =>{
     if(res.code === '200'){
-      console.log(res)
+      console.log('分配角色菜单权限成功',res)
       ElMessage({
         message: '分配角色菜单权限成功',
         type: 'success',
+      })
+      getRoleMenuByUserId(roleId).then(res2 =>{
+        if(res2.code === '200'){
+          ElMessage({
+            message: '刷新页面重新分配权限',
+            type: 'success',
+          })
+          state.changeCurrentMenuInfo(Object.values(res2.data))
+          // 先从本地存储删除currentMenuInfo
+          localStorage.removeItem("currentMenuInfo")
+          // 在加入
+          localStorage.setItem("currentMenuInfo" , JSON.stringify(res2.data))
+          // console.log('RoleView中的',state.currentMenuInfo)
+          // 重新加载页面
+          router.go(0) 
+        }
       })
     }
   }).catch(err =>{

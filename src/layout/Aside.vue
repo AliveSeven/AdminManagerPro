@@ -4,7 +4,7 @@
       class="el-menu-vertical-demo"
       :default-active="route.path"
       text-color="#333639"
-      :default-openeds="['/home/system/']"
+      :default-openeds="['/home/system']"
       style="height : 100vh"
       :collapse="state.isCollapse"
       :router = true

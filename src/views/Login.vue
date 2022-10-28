@@ -85,12 +85,12 @@ function submitForm(inputData : any){
                 type: 'success',
             })
             router.push({
-                path : '/home/dashboard'
+                path : '/home/dashBoard'
             })
             // 将用户数据设定在缓存中
             localStorage.setItem("user" , JSON.stringify(res.data));
-            // 获取当前用户的菜单权限
-            state.getCurrentUserMenu()
+            // 获取当前用户信息
+            state.getCurrentUserInfo()
         }else if(res.code === '600'){
             ElMessage({
                 message: '用户名或密码错误',

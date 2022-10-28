@@ -6,7 +6,7 @@
     <div class="text-center">
       <h3>抱歉，你无权访问该页面</h3>
       <div class="btn">
-        <el-button type="primary" @click="router.push({path : '/home'})">回到首页</el-button>
+        <el-button type="primary" @click="router.push({path : '/home/dashBoard'})">回到首页</el-button>
       </div>
     </div>
   </div>
