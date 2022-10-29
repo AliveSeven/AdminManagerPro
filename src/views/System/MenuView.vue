@@ -3,7 +3,7 @@
         <div class="form">
             <div class="phone">
                 <span>菜单名称</span>
-                <el-input v-model="menuName" class="w-50 m-2" placeholder="请输入菜单名称" :suffix-icon="Search" />
+                <el-input v-model="Pages.InputMenuName" class="w-50 m-2" placeholder="请输入菜单名称" :suffix-icon="Search" />
             </div>
             <el-button type="primary" :icon="Search" class="form-btn" @click="">搜索</el-button>
 
@@ -20,7 +20,7 @@
                 <!-- <el-table-column type="selection" width="55" /> -->
                 <el-table-column prop="id" label="菜单ID" width="120" />
                 <el-table-column prop="name" label="菜单名称" width="200" />
-                <el-table-column prop="path" label="菜单地址" width="150" />
+                <el-table-column prop="path" label="菜单地址" width="200" />
                 <el-table-column prop="icon" label="菜单图标" width="150" />
                 <el-table-column prop="description" label="菜单描述" />
                 <el-table-column prop="isHide" label="是否隐藏"  width="120" />
@@ -52,28 +52,35 @@
 import { reactive, ref } from 'vue'
 import { ElMessage, ElTable } from 'element-plus'
 import { Search, Menu, Plus, Remove} from '@element-plus/icons-vue'
+import { getMenuPage } from '@/utils/api'
 
-const tableData: any = ref([{
+const tableData : any = ref([{
     id : 100,
     name: 'DashBorad',
-    icon: '121',
-    description: '212',
-    isHide: '否',
+    icon: '',
+    description: '',
+    isHide: '',
 }
 ])
 
-const menuName : any = ref('')
+// 页码和每页User数量form:
+var Pages = reactive({
+  pageNum : 1,
+  pageSize : 10,
+  InputMenuName : '',
+})
 
-//  {
-//     DashBorad : 'DashBorad',
-//     System : '系统管理',
-//     User : '用户管理',
-//     Role : '角色管理',
-//     Department : '部门管理'
-//   }
-function getMenuInfo() {
-
+// 获取菜单分页信息
+function getMenuInfo(pageNum : number, pageSize : number, name : string) {
+    getMenuPage(pageNum , pageSize , name).then(res =>{
+        if(res.code === '200'){
+            tableData.value = res.data.records
+            // console.log(res)
+        }
+    })
 }
+
+getMenuInfo(Pages.pageNum , Pages.pageSize, Pages.InputMenuName)
 
 </script>
 

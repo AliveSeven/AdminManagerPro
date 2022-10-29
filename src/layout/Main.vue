@@ -36,15 +36,8 @@ const currentRoutePage : any = ref([])
 const is_show = ref(false);
 
 const getCurrentMenuPath = () =>{
-  // getRoleMenuByUserId(state.currentUserInfo.id).then(res =>{
-  //   if(res.code === '200'){
-  //     state.changeCurrentMenuInfo(res.data)
-  //     localStorage.setItem("currentMenuInfo" , JSON.stringify(res.data))    
-  //   }
-  // })
-  console.log('Main中的state.currentMenuInfo' , state.currentMenuInfo)
+  // console.log('Main中的state.currentMenuInfo' , state.currentMenuInfo)
   state.currentMenuInfo.forEach((element : Menu) => {
-    console.log('element',element)
     currentRoutePage.value.push(element.path)
   });
 }
@@ -55,7 +48,6 @@ getCurrentMenuPath()
 // 路由中添加key解决切换路由时页面不展示内容，刷新后才展示内容问题
 const route = useRoute();
 const key = computed(() => {
-  console.log(currentRoutePage)
   if(currentRoutePage.value.indexOf(route.path) != -1){
     is_show.value = true
   } else {

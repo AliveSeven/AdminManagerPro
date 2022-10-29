@@ -45,7 +45,7 @@ const state = useState();
 
 // 获取当前用户数据
 state.getCurrentUserInfo()
-state.getCurrentMenuInfo()
+// state.getCurrentMenuInfo()
 // const currentUserId : number = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string).id : null
 // function getAvatarInfo(){
 //     if( currentUserId != null){

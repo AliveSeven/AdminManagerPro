@@ -107,3 +107,16 @@ export function getRoleMenuByUserId(id : number){
         method : 'get',
     })
 }
+
+// 获取菜单分页
+export function getMenuPage(pageNum : number, pageSize : number, name : string){
+    return request({
+        url : 'menu/page',
+        method : 'get',
+        params : {
+            pageNum,
+            pageSize,
+            name
+        }
+    })
+}
