@@ -70,6 +70,14 @@ export function login(data : any){
     })
 }
 
+// 获取角色
+export function getRole(){
+    return request({
+        url : '/role',
+        method : 'get',
+    })
+}
+
 // 角色分页信息
 export function getRolePage(pageNum : number, pageSize : number, name : string){
     return request({

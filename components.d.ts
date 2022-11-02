@@ -10,6 +10,8 @@ declare module '@vue/runtime-core' {
     Aside: typeof import('./src/components/Aside.vue')['default']
     CountTo: typeof import('./src/components/CountTo/countTo.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
+    ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
+    ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']

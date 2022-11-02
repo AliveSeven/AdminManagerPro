@@ -21,7 +21,7 @@
                 <el-table-column prop="id" label="角色ID"/>
                 <el-table-column prop="name" label="角色名称"  />
                 <el-table-column prop="description" label="角色描述"  />
-                <el-table-column prop="flag" label="唯一标识"  />
+                <el-table-column prop="role" label="唯一标识"  />
                 <el-table-column label="操作" width="250">
                     <template #default="scope">
                         <!-- 通过插槽scope获取当前行的数据，scope.row.id表示获取当前行的角色id -->
@@ -82,7 +82,7 @@ const tableData: any = ref([{
         id: 100,
         name: '121',
         description: '212',
-        flag: '是',
+        role: '',
     }
 ])
 

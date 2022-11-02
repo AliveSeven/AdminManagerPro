@@ -146,6 +146,13 @@
                 <el-input v-model="currentRow.address" autocomplete="off" />
               </el-form-item>
             </el-col>
+            <el-col :span="20" :offset="0">
+              <el-form-item label="角色" :label-width="formLabelWidth">
+                <el-select placeholder="" v-model="currentRow.role" >
+                  <el-option v-for="(item, index) in roleData" :key="index" :label="item.description" :value="item.role" />
+                </el-select>
+              </el-form-item>
+            </el-col>
           </el-row>
         </el-form>
         <template #footer>
@@ -217,7 +224,7 @@ import { ref , reactive } from 'vue'
 import { Search, Iphone, Promotion, Plus, Remove, Top, Bottom, UploadFilled } from '@element-plus/icons-vue'
 import { ElMessage, FormRules, FormInstance, ElTable } from 'element-plus'
 import type { UploadInstance, UploadProps } from 'element-plus'
-import { getPage, addOrUpdateUser, deleteUser, exportUser } from '@/utils/api'
+import { getPage, addOrUpdateUser, deleteUser, exportUser, getRole } from '@/utils/api'
 import { useState } from '@/stores/state'
 
 const state = useState();
@@ -243,6 +250,7 @@ var currentRow = reactive({
   email : '',
   phone : '',
   address : '',
+  role : ''
 })
 // 分页数据
 // 用户总数，暂定为100个
@@ -256,6 +264,9 @@ var Pages = reactive({
   InputEmail : '',
   InputPhone : '',
 })
+
+// 用户角色
+const roleData = ref()
 
 // 对话框变量
 const dialogAddVisible = ref(false)
@@ -309,6 +320,7 @@ const rules = reactive<FormRules>({
 
 // 在页面渲染之前调用函数
 getPageInfoByInput()
+getRoleInfo()
 // onMounted(() => {
 //     getPageInfoByInput()
 // })
@@ -322,6 +334,15 @@ function getPageInfo(pageNum : number, pageSize : number , username : string , e
     }
   }).catch((err) =>{
     console.log('获取数据报错',err)
+  })
+}
+
+// 获取角色信息
+function getRoleInfo(){
+  getRole().then(res =>{
+    if(res.code === '200'){
+      roleData.value = res.data
+    }
   })
 }
 
