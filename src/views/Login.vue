@@ -42,7 +42,7 @@
                     <!-- 其他登录方式和注册账号 -->
                     <div class="form-item-blank">
                         <span style="font-size : 14px;">其它登录方式</span>
-                        <div class="blank-item">注册账号</div>
+                        <div class="blank-item" @click="router.push({ path : '/register' })">注册账号</div>
                     </div>
                 </el-form>
             </div>

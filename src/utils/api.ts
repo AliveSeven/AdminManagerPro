@@ -70,6 +70,15 @@ export function login(data : any){
     })
 }
 
+// 用户注册
+export function register(data : any){
+    return request({
+        url : '/user/register',
+        method : 'post',
+        data
+    })
+}
+
 // 获取角色
 export function getRole(){
     return request({
