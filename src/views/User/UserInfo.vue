@@ -43,7 +43,7 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="24" :offset="0">
-                        <el-button type="primary">确认</el-button>
+                        <el-button type="primary" @click="submitForm(formUserInfo)">确认</el-button>
                     </el-col>
                 </el-row>
             </el-form>
@@ -125,13 +125,23 @@ function getCurrentUserById( id : number){
     })
 }
 
-// 提交
+// 更新用户数据，编辑
 function submitForm(FormData : any){
   addOrUpdateUser(FormData).then((res) =>{
-    ElMessage({
-      message: '更新用户信息成功',
-      type: 'success',
-    })
+    if(res.code === '200'){
+      // 获取当前用户的id，进行判断
+      const currentUserId = JSON.parse(localStorage.getItem("user") as string).id
+      // 如果是当前用户的id
+      if(FormData.id == currentUserId){
+        // 改变赋值
+        state.changeCurrentUserInfo(FormData)
+        console.log("当前用户信息：", state.currentUserInfo)
+      }
+      ElMessage({
+        message: '更新用户信息成功',
+        type: 'success',
+      })
+    }
   }).catch((err) =>{
       console.log("更新失败：",err)
       ElMessage({
