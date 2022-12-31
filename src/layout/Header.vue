@@ -13,7 +13,8 @@
 
         <div class="toolbar-bread">
             <el-breadcrumb separator="/">
-              <el-breadcrumb-item v-for="(item, index) in brands" :key="index"><a href="">{{ item }}</a></el-breadcrumb-item>
+                <el-breadcrumb-item :to="'/home/dashBoard'">首页</el-breadcrumb-item>
+                <el-breadcrumb-item>{{ brands }}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
 
@@ -45,14 +46,18 @@ import { useState } from '../stores/state'
 import { User, CircleCloseFilled } from '@element-plus/icons-vue'
 import router from '@/router';
 import { useRoute } from 'vue-router';
+import { computed } from 'vue'
 
-const route = useRoute()
 // import { getUserById } from '@/utils/api'
 // import { ElMessage } from 'element-plus'
 const state = useState();
 
-const brands = route.path.split('/')
-brands.shift()
+const brands = computed(() =>{
+    return state.currentRoute
+})
+
+// const brands = state.currentRoute.split('/')
+// brands.shift()
 console.log(brands)
 
 // 获取当前用户数据

@@ -48,9 +48,9 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { ref } from 'vue'
 import { ElMessage, ElTable } from 'element-plus'
-import { Search, Iphone, Promotion, Plus, Remove, } from '@element-plus/icons-vue'
+import { Search, Plus, Remove, } from '@element-plus/icons-vue'
 
 const tableData: any = ref([{
     id: 100,
@@ -71,9 +71,6 @@ const menuName : any = ref('')
 //     Role : '角色管理',
 //     Department : '部门管理'
 //   }
-function getMenuInfo() {
-
-}
 
 </script>
 

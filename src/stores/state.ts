@@ -3,11 +3,10 @@ import { ref, reactive ,computed } from 'vue'
 import { defineStore } from 'pinia'
 import { getRoleMenuByUserId } from '@/utils/api'
 
-export const useState = defineStore('main',{   
+export const useState = defineStore('useState',{   
   state(){
     return {
       isCollapse: false ,
-
       // 当前用户信息，这个是用本地存储取的
       currentUserInfo : reactive({
         id : 100,
@@ -15,9 +14,11 @@ export const useState = defineStore('main',{
         nickname : '',
         avatarUrl : '',
       }),
-
       // 当前用户的菜单权限
       currentMenuInfo : reactive([]),
+      // 路由
+      currentRoute : ''
+      
     }
   },
   
@@ -61,6 +62,11 @@ export const useState = defineStore('main',{
     // 改变当前用户菜单信息
     changeCurrentMenuInfo(MenuData : any){
       Object.assign(this.currentMenuInfo , MenuData)
+    },
+
+    // 获取当前路由
+    setRouteName(){
+      this.currentRoute = localStorage.getItem('currentRouteName') as string
     }
 
   }

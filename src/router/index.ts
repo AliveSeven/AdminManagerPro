@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useState } from '@/stores/state';
 
+// 路由
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -77,6 +79,28 @@ const router = createRouter({
       component : () => import('@/views/Exception/Ex500.vue')
     },
   ]
+})
+
+// 路由监听
+router.beforeEach((to , from , next) =>{
+  const { setRouteName } = useState()
+  localStorage.setItem('currentRouteName', to.name as string)
+  // 设置当前路由
+  setRouteName()
+
+  // 未找到路由的情况
+  if (!to.matched.length) {
+    const storeMenus = localStorage.getItem("menus")
+    if (storeMenus) {
+      next("/404")
+    } else {
+      // 跳回登录页面
+      next("/login")
+    }
+  }
+  // 其他的情况都放行
+  next()
+
 })
 
 const setRouter = () =>{

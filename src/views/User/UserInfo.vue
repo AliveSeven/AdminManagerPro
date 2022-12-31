@@ -86,7 +86,7 @@
 </template>
     
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, nextTick } from 'vue'
 import { useState } from '@/stores/state'
 import { getUserById , addOrUpdateUser } from '@/utils/api'
 import { ElMessage } from 'element-plus'
@@ -150,6 +150,10 @@ function submitForm(FormData : any){
     })
   })
 }
+
+nextTick(() =>{
+  
+})
 
 // 获取pinia中的state数据
 // state.getCurrentUserInfo()
