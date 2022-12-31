@@ -34,11 +34,6 @@ export const useState = defineStore('useState',{
       if(currentUser != null){
         Object.assign(this.currentUserInfo , currentUser)
         this.currentMenuInfo = localStorage.getItem("currentMenuInfo") ? JSON.parse(localStorage.getItem("currentMenuInfo") as string) : Object.assign(currentUser.menus)
-        // getRoleMenuByUserId(currentUser.id).then(res =>{
-        //   this.currentMenuInfo = Object.assign(res.data)
-        //   console.log(this.currentMenuInfo)
-        //   localStorage.setItem("currentMenuInfo" , JSON.stringify(this.currentMenuInfo))
-        // })
       }
     },
 
@@ -48,10 +43,22 @@ export const useState = defineStore('useState',{
       if(currentUser != null){
         getRoleMenuByUserId(currentUser.id).then(res =>{
           this.currentMenuInfo = Object.assign(res.data)
-          // console.log(this.currentMenuInfo)
           localStorage.setItem("currentMenuInfo" , JSON.stringify(this.currentMenuInfo))
         })
       }
+    },
+
+    // 退出登录，注销
+    loginout(){
+      localStorage.removeItem('user')
+      // 初始化currentUserInfo
+      this.currentUserInfo = reactive({
+        id : 100,
+        username : '',
+        nickname : '',
+        avatarUrl : '',
+      })
+      // 后续做路由跳转到login的操作
     },
 
     // 改变当前用户信息

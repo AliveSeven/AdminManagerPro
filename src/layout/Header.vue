@@ -12,10 +12,12 @@
         </div>
 
         <div class="toolbar-bread">
-            <el-breadcrumb separator="/">
-                <el-breadcrumb-item :to="'/home/dashBoard'">首页</el-breadcrumb-item>
-                <el-breadcrumb-item>{{ brands }}</el-breadcrumb-item>
-            </el-breadcrumb>
+            <transition name="slide-fade" >
+                <el-breadcrumb separator="/">
+                    <el-breadcrumb-item :to="'/home/dashBoard'">首页</el-breadcrumb-item>
+                    <el-breadcrumb-item >{{ brands }}</el-breadcrumb-item>
+                </el-breadcrumb>
+            </transition>
         </div>
 
         <div class="toolbar-right">
@@ -31,7 +33,7 @@
                     <template #dropdown>
                       <el-dropdown-menu>
                         <el-dropdown-item :icon="User" @click="router.push({path : '/home/userInfo'})">个人中心</el-dropdown-item>
-                        <el-dropdown-item :icon="CircleCloseFilled">退出登录</el-dropdown-item>
+                        <el-dropdown-item :icon="CircleCloseFilled" @click="showLoginOut = true">退出登录</el-dropdown-item>
                       </el-dropdown-menu>
                     </template>
                 </el-dropdown>
@@ -39,50 +41,46 @@
         </div>
     </div>
 
+    <!-- 退出登录的对话框 -->
+    <el-dialog v-model="showLoginOut" title="温馨提示" width="30%" center>
+      <span>
+        要退出当前账号吗？
+      </span>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="showLoginOut = false">取消</el-button>
+          <el-button type="primary" @click="LoginOut">
+            确认
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
+
 </template>
 
 <script lang="ts" setup>
 import { useState } from '../stores/state'
 import { User, CircleCloseFilled } from '@element-plus/icons-vue'
 import router from '@/router';
-import { useRoute } from 'vue-router';
-import { computed } from 'vue'
-
-// import { getUserById } from '@/utils/api'
-// import { ElMessage } from 'element-plus'
+import { computed , ref } from 'vue'
+// pinia
 const state = useState();
-
+// 面包屑
 const brands = computed(() =>{
     return state.currentRoute
 })
 
-// const brands = state.currentRoute.split('/')
-// brands.shift()
-console.log(brands)
-
 // 获取当前用户数据
 state.getCurrentUserInfo()
-// state.getCurrentMenuInfo()
-// const currentUserId : number = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string).id : null
-// function getAvatarInfo(){
-//     if( currentUserId != null){
-//         // 根据id获取当前用户的名字
-//         getUserById(currentUserId).then((res) =>{
-//             if(res.code === '200'){
-//                 currentUserName.value = res.data.nickname
-//             }
-//         }).catch(err =>{
-//             console.log(err)
-//         })
-//     }else{
-//         ElMessage({
-//           message: '无法获取当前用户的昵称',
-//           type: 'error',
-//         })
-//     }
-// }
 
-
+// 退出登录的对话框
+const showLoginOut = ref(false)
+// 点击退出登录
+const LoginOut = () =>{
+    // 执行退出账号
+    state.loginout()
+    router.push({path : '/login'})
+}
 
 </script>
 

@@ -88,6 +88,14 @@ router.beforeEach((to , from , next) =>{
   // 设置当前路由
   setRouteName()
 
+  // 如果当前路由是登录
+  if(to.name === 'Login'){
+    const token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string).token : ''
+    if(token != ''){
+      next("/home/dashBoard")
+    }
+  }
+
   // 未找到路由的情况
   if (!to.matched.length) {
     const storeMenus = localStorage.getItem("menus")
