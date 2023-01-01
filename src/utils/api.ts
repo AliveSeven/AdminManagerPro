@@ -79,6 +79,17 @@ export function register(data : any){
     })
 }
 
+// 验证用户的token是否过期
+export function isExpiration(token : string){
+    return request({
+        url : '/user/token',
+        method : 'post',
+        params : {
+            token
+        }
+    })
+}
+
 // 获取角色
 export function getRole(){
     return request({
@@ -129,6 +140,20 @@ export function getRoleMenuByUserId(id : number){
 export function getMenuPage(pageNum : number, pageSize : number, name : string){
     return request({
         url : 'menu/page',
+        method : 'get',
+        params : {
+            pageNum,
+            pageSize,
+            name
+        }
+    })
+}
+
+
+// 获取文件分页
+export function getFilePage(pageNum : number, pageSize : number, name? : string){
+    return request({
+        url : '/file/page',
         method : 'get',
         params : {
             pageNum,

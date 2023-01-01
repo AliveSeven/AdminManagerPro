@@ -37,7 +37,7 @@
         <el-table-column label="详细信息">
           <el-table-column prop="email" label="邮箱" width="200" />
           <el-table-column prop="phone" label="电话" width="120" />
-          <el-table-column prop="date" label="创建日期" width="150" />
+          <el-table-column prop="role" label="用户角色" width="150" />
           <el-table-column prop="address" label="地址" />
         </el-table-column>
         <el-table-column label="操作" width="150">
@@ -100,12 +100,19 @@
                 <el-input v-model="form.address" autocomplete="off" />
               </el-form-item>
             </el-col>
+            <el-col :span="20" :offset="0">
+              <el-form-item label="角色" :label-width="formLabelWidth" prop="role">
+                <el-select placeholder="请选择用户角色" v-model="form.role" :options="roleData" autocomplete="off">
+                  <el-option v-for="(item, index) in roleData" :key="index" :label="item.description" :value="item.role" />
+                </el-select>
+              </el-form-item>
+            </el-col>
           </el-row>
         </el-form>
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="dialogAddVisible = false">Cancel</el-button>
-            <el-button type="primary" @click="handleAdd(form)"
+            <el-button type="primary" @click="handleAdd(form , ruleFormRef)"
               >Confirm</el-button>
           </span>
         </template>
@@ -147,8 +154,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="20" :offset="0">
-              <el-form-item label="角色" :label-width="formLabelWidth">
-                <el-select placeholder="" v-model="currentRow.role" >
+              <el-form-item label="角色" :label-width="formLabelWidth" prop="role">
+                <el-select placeholder="请选择角色" v-model="currentRow.role" >
                   <el-option v-for="(item, index) in roleData" :key="index" :label="item.description" :value="item.role" />
                 </el-select>
               </el-form-item>
@@ -158,7 +165,7 @@
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="dialogEditVisible = false">Cancel</el-button>
-            <el-button type="primary" @click="handleEdit(currentRow)"
+            <el-button type="primary" @click="handleEdit(currentRow , ruleFormRef)"
               >Confirm</el-button>
           </span>
         </template>
@@ -294,6 +301,7 @@ const form = reactive({
   email : '',
   phone : '',
   address : '',
+  role : ''
 })
 
 const rules = reactive<FormRules>({
@@ -315,7 +323,10 @@ const rules = reactive<FormRules>({
   email : [
     { required: false, message: "请输入邮箱", trigger: "blur" },
     { pattern:/^([0-9A-Za-z\-_\.]+)@([0-9a-z]+\.[a-z]{2,3}(\.[a-z]{2})?)$/g, message: "请输入正确的邮箱", trigger: "blur"}
-  ]
+  ],
+  role : [
+    { required: true, message: "请选择角色", trigger: "change" },
+  ],
 })
 
 // 在页面渲染之前调用函数
@@ -362,61 +373,78 @@ function reGetPageInfo(){
 }
 
 // 新增用户数据
-function handleAdd(formData : any){
-    addOrUpdateUser(formData).then((res) =>{
-      if(res.code === '200'){
-        ElMessage({
-          message: '新增用户成功',
-          type: 'success',
+async function handleAdd(formData : any , formEl?: FormInstance | undefined){
+    // 校验表单
+    if (!formEl) return
+    await formEl.validate((valid, fields) => {
+      if (valid) {
+        addOrUpdateUser(formData).then((res) =>{
+          if(res.code === '200'){
+            ElMessage({
+              message: '新增用户成功',
+              type: 'success',
+            })
+            reGetPageInfo()
+            // 清空form数据
+            form.username = '',
+            form.password = '',
+            form.phone = '',
+            form.nickname= '',
+            form.email = '',
+            form.address = '',
+            dialogAddVisible.value = false
+            loading.value = !loading.value
+          }
+        }).catch((err) =>{
+            console.log("新增失败：",err)
+            ElMessage({
+            message: '新增失败',
+            type: 'error',
+          })
         })
-        reGetPageInfo()
-        // 清空form数据
-        form.username = '',
-        form.password = '',
-        form.phone = '',
-        form.nickname= '',
-        form.email = '',
-        form.address = '',
-        dialogAddVisible.value = false
-        loading.value = !loading.value
+      } else {
+        console.log('error submit!', fields)
       }
-    }).catch((err) =>{
-      console.log("新增失败：",err)
-      ElMessage({
-      message: '新增失败',
-      type: 'error',
     })
-  })
 }
 
 // 更新用户数据，编辑
-function handleEdit(tableRowData : any){
-  addOrUpdateUser(tableRowData).then((res) =>{
-    if(res.code === '200'){
-      // 获取当前用户的id，进行判断
-      const currentUserId = JSON.parse(localStorage.getItem("user") as string).id
-      // 如果是当前用户的id
-      if(tableRowData.id == currentUserId){
-        // 改变赋值
-        state.changeCurrentUserInfo(tableRowData)
-        console.log("当前用户信息：", state.currentUserInfo)
+async function handleEdit(tableRowData : any , formEl?: FormInstance | undefined){
+  // 校验表单
+  if (!formEl) return;
+  // 验证
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+        // 新增或更新用户
+        addOrUpdateUser(tableRowData).then((res) =>{
+          if(res.code === '200'){
+            // 获取当前用户的id，进行判断
+            const currentUserId = JSON.parse(localStorage.getItem("user") as string).id
+            // 如果是当前用户的id
+            if(tableRowData.id == currentUserId){
+              // 改变赋值
+              state.changeCurrentUserInfo(tableRowData)
+              console.log("当前用户信息：", state.currentUserInfo)
+            }
+            ElMessage({
+              message: '更新用户信息成功',
+              type: 'success',
+            })
+            dialogEditVisible.value = false
+            loading.value = !loading.value
+            reGetPageInfo()
+          }
+        }).catch((err) =>{
+            console.log("更新失败：",err)
+            ElMessage({
+              message: '更新失败',
+              type: 'error',
+          })
+        })
+      } else {
+        console.log('error submit!', fields)
       }
-      ElMessage({
-        message: '更新用户信息成功',
-        type: 'success',
-      })
-      dialogEditVisible.value = false
-      loading.value = !loading.value
-      reGetPageInfo()
-    }
-  }).catch((err) =>{
-      console.log("更新失败：",err)
-      ElMessage({
-        message: '更新失败',
-        type: 'error',
-    })
   })
-  // console.log(tableRowData)
 }
 
 // 删除用户信息，删除

@@ -2,8 +2,8 @@
     <div class="fileView">
         <div class="form">
             <div class="phone">
-                <span>菜单名称</span>
-                <el-input v-model="menuName" class="w-50 m-2" placeholder="请输入菜单名称" :suffix-icon="Search" />
+                <span>文件名称</span>
+                <el-input v-model="Pages.InputFileName" class="w-50 m-2" placeholder="请输入文件名称" :suffix-icon="Search" />
             </div>
             <el-button type="primary" :icon="Search" class="form-btn" @click="">搜索</el-button>
 
@@ -36,41 +36,73 @@
         <div class="pager">
           <el-pagination 
           small background layout="total, sizes, prev, pager, next, jumper" 
-          :page-size="5"
+          :page-size="Pages.pageSize"
           :page-sizes="[5, 10, 20, 30]"
-          :current-page="1"
-          @current-change=""
-          @size-change=""  
-          :total="100" 
+          :current-page="Pages.pageNum"
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"  
+          :total="total" 
           class="mt-4" />
         </div>
     </div>
 </template>
 
-<script setup lang="ts">
-import { ref } from 'vue'
-import { ElMessage, ElTable } from 'element-plus'
-import { Search, Plus, Remove, } from '@element-plus/icons-vue'
+<script lang="ts" setup>
+import { reactive, ref , onMounted } from 'vue';
+import { ElMessage, ElTable } from 'element-plus';
+import { Search, Plus, Remove, } from '@element-plus/icons-vue';
+import { getFilePage } from '@/utils/api';
 
 const tableData: any = ref([{
-    id: 100,
-    name: '121',
-    type: 'jpg',
-    size: 100,
-    url : 'http://localhost:8000/file/67b90318759d4bd8872b4cfed814f151.jpg'
-
-}
+        id: 100,
+        name: '121',
+        type: 'jpg',
+        size: 100,
+        url : 'http://localhost:8000/file/67b90318759d4bd8872b4cfed814f151.jpg'
+    }
 ])
+// 分页数据
+// 用户总数，暂定为100个
+var total = ref(100)
 
-const menuName : any = ref('')
+// 页码和每页User数量form:
+var Pages = reactive({
+  pageNum : 1,
+  pageSize : 10,
+  InputFileName : '',
+})
 
-//  {
-//     DashBorad : 'DashBorad',
-//     System : '系统管理',
-//     User : '用户管理',
-//     Role : '角色管理',
-//     Department : '部门管理'
-//   }
+function getFilePageInfo(pageNum : number , pageSize : number , fileName? : string){
+    // 获取文件分页信息
+    getFilePage(pageNum , pageSize , fileName).then((res) =>{
+        total.value = res.data.total
+        tableData.value = res.data.records
+    })
+}
+
+// 通过输入的信息获取用户信息，搜索
+function getPageInfoByInput(){
+    getFilePageInfo(Pages.pageNum , Pages.pageSize, Pages.InputFileName)
+}
+
+
+// 页数更改事件
+function handleCurrentChange(val : number){
+    Pages.pageNum = val
+    getPageInfoByInput()
+}
+
+// 页Size改变
+function handleSizeChange(val : number){
+    Pages.pageSize = val
+    getPageInfoByInput()
+}
+
+// 页面初始化完毕，组件DOM实际渲染完执行函数
+onMounted(() => {
+    // 获取文件分页信息
+    getFilePageInfo(Pages.pageNum , Pages.pageSize)
+})
 
 </script>
 

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useState } from '@/stores/state';
+import { isExpiration } from '@/utils/api'
 
 // 路由
 const router = createRouter({
@@ -91,13 +92,17 @@ router.beforeEach((to , from , next) =>{
   // 如果当前路由是登录
   if(to.name === 'Login'){
     const token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string).token : ''
-    if(token != ''){
-      next("/home/dashBoard")
-    }
+    // 检查token是否过期
+    isExpiration(token).then(res =>{
+      // 如果token没有过期，之间跳到主控台
+      if(res.data){
+        next("/home/dashBoard")
+      }
+    })
   }
 
   // 未找到路由的情况
-  if (!to.matched.length) {
+  else if (!to.matched.length) {
     const storeMenus = localStorage.getItem("menus")
     if (storeMenus) {
       next("/404")
@@ -106,8 +111,11 @@ router.beforeEach((to , from , next) =>{
       next("/login")
     }
   }
-  // 其他的情况都放行
-  next()
+
+  else{
+    // 其他的情况都放行
+    next()
+  }
 
 })
 
