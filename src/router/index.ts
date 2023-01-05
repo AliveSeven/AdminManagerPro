@@ -97,6 +97,8 @@ router.beforeEach((to , from , next) =>{
       // 如果token没有过期，之间跳到主控台
       if(res.data){
         next("/home/dashBoard")
+      }else {
+        next()
       }
     })
   }

@@ -9,9 +9,10 @@ const request = axios.create({
 // 处理  类型“AxiosResponse<any, any>”上不存在属性“xxxx”。ts(2339) 关键一步。
 declare module "axios" {
     interface AxiosResponse<T = any> {
-      total: number;
-      records: any;
-      code : any;
+      total: number
+      records: any
+      code : any
+      msg : string
       // 这里追加你的参数
     }
     export function create(config?: AxiosRequestConfig): AxiosInstance;

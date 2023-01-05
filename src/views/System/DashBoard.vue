@@ -1,6 +1,7 @@
 <template>
-    <div class="dashboard">
-        <div class="number-wrap">
+    <el-scrollbar>
+        <div class="dashboard">
+            <div class="number-wrap">
             <el-row :gutter="5">
                 <el-col :span="6" :offset="0">
                     <div class="num-data">
@@ -103,18 +104,18 @@
                     </div>
                 </el-col>
             </el-row>
-        </div>
-        <!-- 动态图 -->
-        <div class="bar-wrap">
+            </div>
+            <!-- 动态图 -->
+            <div class="bar-wrap">
             <el-row>
                 <el-col :span="24" :offset="0">
                     <div id="echarts-main" style="height: 55vh;"></div>
                 </el-col>
             </el-row>
-        </div>
+            </div>
 
-        <!-- 饼图 -->
-        <div class="pie-wrap">
+            <!-- 饼图 -->
+            <div class="pie-wrap">
             <el-row :gutter="5">
                 <el-col :span="6" class="pie-item" :offset="0">
                     <div class="num-data">
@@ -169,9 +170,10 @@
                 </el-col>
 
             </el-row>
-        </div>
+            </div>
 
-    </div>
+        </div>
+    </el-scrollbar>
 </template>
 
 <script lang="ts" setup>

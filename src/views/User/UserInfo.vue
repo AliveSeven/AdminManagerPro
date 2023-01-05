@@ -54,7 +54,7 @@
               <el-upload
                 class="upload-demo"
                 ref="uploadAvatar"
-                action="#"
+                :action="`${uploadUrl}file/upload`"
                 method="post"
                 list-type="picture"
                 :on-exceed="handleExceed"
@@ -102,6 +102,8 @@ const dialogUploadAvatar = ref(false)
 const uploadAvatar = ref()
 // 上传的图片
 const dialogImageUrl = ref('')
+// 上传链接前缀
+const uploadUrl = 'http://localhost:8000'
 
 // 当前用户的信息
 const formUserInfo = reactive({
@@ -227,7 +229,7 @@ function handleUploadError(){
       flex-direction: column;
       justify-content: center;
     }
-}
+  }
 
 }
 </style>

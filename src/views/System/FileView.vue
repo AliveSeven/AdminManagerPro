@@ -11,7 +11,7 @@
         </div>
 
         <div class="form-sec">
-            <el-button class="form-btn" type="primary" :icon="Plus" @click="">新增</el-button>
+            <el-button class="form-btn" type="primary" :icon="Plus" @click="dialogUploadFiles = true">新增</el-button>
             <el-button class="form-btn" type="danger" :icon="Remove">批量删除</el-button>
         </div>
 
@@ -44,6 +44,41 @@
           :total="total" 
           class="mt-4" />
         </div>
+
+        <!-- 文件上传对话框 -->
+        <div class="dialog-upload">
+            <el-dialog v-model="dialogUploadFiles" title="上传要导入的图片文件">
+              <el-upload
+                class="upload-demo"
+                ref="uploadFiles"
+                :http-request="uploadFileRequest"
+                action
+                method="post"
+                :on-exceed="handleExceed"
+                drag
+                :auto-upload="false"
+                :limit="1">
+                  <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+                  <div class="el-upload__text">
+                    Drop file here or <em>click to upload</em>
+                  </div>
+                  <template #tip>
+                    <div class="upload-submit">
+                      <div class="submit-wrap">
+                        <el-button class="ml-3" type="success" @click="submitUpload">
+                          确认上传到服务器
+                        </el-button>
+                        <div class="el-upload__tip">
+                          上传表格文件，限制上传一个
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+              </el-upload>
+            </el-dialog>
+        </div>
+
+        
     </div>
 </template>
 
@@ -51,7 +86,8 @@
 import { reactive, ref , onMounted } from 'vue';
 import { ElMessage, ElTable } from 'element-plus';
 import { Search, Plus, Remove, } from '@element-plus/icons-vue';
-import { getFilePage } from '@/utils/api';
+import { getFilePage , uploadFile } from '@/utils/api';
+import type { UploadProps } from 'element-plus'
 
 const tableData: any = ref([{
         id: 100,
@@ -65,6 +101,15 @@ const tableData: any = ref([{
 // 用户总数，暂定为100个
 var total = ref(100)
 
+// 上传对话框
+const dialogUploadFiles = ref(false)
+
+// 上传链接前缀
+const uploadUrl = 'http://localhost:8000'
+
+// 上传的文件
+const uploadFiles = ref()
+
 // 页码和每页User数量form:
 var Pages = reactive({
   pageNum : 1,
@@ -72,8 +117,8 @@ var Pages = reactive({
   InputFileName : '',
 })
 
+// 获取文件分页信息
 function getFilePageInfo(pageNum : number , pageSize : number , fileName? : string){
-    // 获取文件分页信息
     getFilePage(pageNum , pageSize , fileName).then((res) =>{
         total.value = res.data.total
         tableData.value = res.data.records
@@ -96,6 +141,64 @@ function handleCurrentChange(val : number){
 function handleSizeChange(val : number){
     Pages.pageSize = val
     getPageInfoByInput()
+}
+
+// 上传文件的函数
+async function uploadFileRequest(item : any){
+  let FormDatas = new FormData()
+  // 上传文件的需要formdata类型;所以要转
+  FormDatas.append('file',item.file);
+  await uploadFile(FormDatas).then((res) =>{
+    if(res.code == '200'){
+      handleUploadSuccess()
+    }else if(res.code == '701' || res.code == '702'){
+      handleUploadError(res.msg)
+    }else {
+      handleUploadError()
+    }
+  })
+}
+
+// 当超出限制时，执行的钩子函数
+const handleExceed: UploadProps['onExceed'] = (files) => {
+  ElMessage({
+    message: '只能上传一个文件',
+    type: 'error',
+  })
+}
+
+// 上传成功函数
+function handleUploadSuccess(){
+  ElMessage({
+    message: '上传成功',
+    type: 'success',
+  })
+  dialogUploadFiles.value = false
+  // 清空已上传的文件列表
+  uploadFiles.value!.clearFiles()
+  // 重新获取表单数据
+  // 获取文件分页信息
+  getFilePageInfo(Pages.pageNum , Pages.pageSize)
+}
+
+// 上传失败函数
+function handleUploadError(msg? : string){
+  if(msg){
+    ElMessage({
+      message: msg,
+      type: 'error',
+    })
+  } else {
+    ElMessage({
+      message: '导入失败，请重试',
+      type: 'error',
+    })
+  }
+}
+
+// 手动上传函数
+const submitUpload = () => {
+  uploadFiles.value!.submit()
 }
 
 // 页面初始化完毕，组件DOM实际渲染完执行函数
@@ -151,6 +254,18 @@ onMounted(() => {
   justify-content: center;
   align-items: center;
   margin: 20px 0;
+}
+
+.upload-submit{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  .submit-wrap{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 }
 
 </style>

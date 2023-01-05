@@ -149,6 +149,14 @@ export function getMenuPage(pageNum : number, pageSize : number, name : string){
     })
 }
 
+// 上传文件
+export function uploadFile(data : any){
+    return request({
+        url : '/file/upload',
+        method : 'post',
+        data
+    })
+}
 
 // 获取文件分页
 export function getFilePage(pageNum : number, pageSize : number, name? : string){
