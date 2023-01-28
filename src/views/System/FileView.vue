@@ -5,9 +5,9 @@
                 <span>文件名称</span>
                 <el-input v-model="Pages.InputFileName" class="w-50 m-2" placeholder="请输入文件名称" :suffix-icon="Search" />
             </div>
-            <el-button type="primary" :icon="Search" class="form-btn" @click="">搜索</el-button>
+            <el-button type="primary" :icon="Search" class="form-btn" @click="getPageInfoByInput">搜索</el-button>
 
-            <el-button class="form-btn" plain @click="">重置</el-button>
+            <el-button class="form-btn" plain @click="reGetPageInfo">重置</el-button>
         </div>
 
         <div class="form-sec">
@@ -16,7 +16,7 @@
         </div>
 
         <div class="form-table">
-            <el-table :data="tableData" :border="true" @current-change="" ref="singleTableRef" :header-cell-style="{ background : '#F5F7FA'}" style="width: 98%;margin-left: 10px;height: 67vh;">
+            <el-table :data="tableData" :border="true" @current-change="TableCurrentChange" ref="singleTableRef" :header-cell-style="{ background : '#F5F7FA'}" style="width: 98%;margin-left: 10px;height: 67vh;">
                 <el-table-column type="selection" width="55" />
                 <el-table-column prop="id" label="文件ID" width="150"/>
                 <el-table-column prop="name" label="文件名称"  width="150"/>
@@ -26,7 +26,7 @@
                 <el-table-column label="操作" width="180">
                     <template #default="scope">
                         <el-button size="small" @click="" type="warning" plain>编辑</el-button>
-                        <el-button size="small" type="danger" @click="">删除</el-button>
+                        <el-button size="small" type="danger" @click="dialogDeleteFiles = true">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -78,7 +78,23 @@
             </el-dialog>
         </div>
 
-        
+        <!-- 删除文件的对话框 -->
+        <div class="dialog-delete">
+            <el-dialog
+              v-model="dialogDeleteFiles"
+              :model="currentRow"
+              title="删除文件信息"
+              width="30%">
+              <span>删除当前文件</span>
+              <template #footer>
+                <span class="dialog-footer">
+                  <el-button @click="dialogDeleteFiles = false">Cancel</el-button>
+                  <el-button type="primary" @click="deleteFileById(currentRow.id)"
+                    >Confirm</el-button>
+                </span>
+              </template>
+            </el-dialog>
+        </div>
     </div>
 </template>
 
@@ -86,7 +102,7 @@
 import { reactive, ref , onMounted } from 'vue';
 import { ElMessage, ElTable } from 'element-plus';
 import { Search, Plus, Remove, } from '@element-plus/icons-vue';
-import { getFilePage , uploadFile } from '@/utils/api';
+import { getFilePage , uploadFile , deleteFile } from '@/utils/api';
 import type { UploadProps } from 'element-plus'
 
 const tableData: any = ref([{
@@ -103,6 +119,9 @@ var total = ref(100)
 
 // 上传对话框
 const dialogUploadFiles = ref(false)
+
+// 删除对话框
+const dialogDeleteFiles = ref(false)
 
 // 上传链接前缀
 const uploadUrl = 'http://localhost:8000'
@@ -130,6 +149,24 @@ function getPageInfoByInput(){
     getFilePageInfo(Pages.pageNum , Pages.pageSize, Pages.InputFileName)
 }
 
+// 重置
+function reGetPageInfo(){
+  // 页数重新定位到第一页
+  Pages.pageNum = 1,
+  Pages.pageSize = 10,
+  Pages.InputFileName = ''
+  getPageInfoByInput()
+}
+
+// 传入的文件id
+const currentRow = ref({
+  id : 100
+})
+// 表格的当行发生变化触发的事件
+function TableCurrentChange(val : any){
+  // 这样给reactive赋值可以保证页面会重新渲染
+  currentRow.value = val
+}
 
 // 页数更改事件
 function handleCurrentChange(val : number){
@@ -201,10 +238,29 @@ const submitUpload = () => {
   uploadFiles.value!.submit()
 }
 
+// 删除文件
+function deleteFileById(id : number){
+  deleteFile(id).then((res) =>{
+    if(res.code === '200'){
+        ElMessage({
+        message: '删除用户信息成功',
+            type: 'success',
+        })
+        reGetPageInfo()
+      }
+  }).catch((err) =>{
+    console.log("删除文件失败：",err)
+    ElMessage({
+        message: '删除文件失败',
+        type: 'error',
+    })
+  })
+}
+
 // 页面初始化完毕，组件DOM实际渲染完执行函数
 onMounted(() => {
-    // 获取文件分页信息
-    getFilePageInfo(Pages.pageNum , Pages.pageSize)
+  // 获取文件分页信息
+  getFilePageInfo(Pages.pageNum , Pages.pageSize)
 })
 
 </script>

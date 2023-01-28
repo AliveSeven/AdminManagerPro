@@ -1,8 +1,8 @@
 <template>
     <RouterView v-slot="{ Component }">
-      <transition name="slide-fade" >
+      <transition name="fade" mode='out-in'>
         <keep-alive>
-          <component class="child-view" :is="Component" :key="key" v-show="is_show"/>
+          <component :is="Component" :key="key" v-show="is_show"/>
         </keep-alive>
       </transition>
     </RouterView>

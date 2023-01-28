@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive, ref, onMounted } from 'vue'
 import { ElMessage, ElTable } from 'element-plus'
 import { Search, Menu, Plus, Remove} from '@element-plus/icons-vue'
 import { getMenuPage } from '@/utils/api'
@@ -80,7 +80,10 @@ function getMenuInfo(pageNum : number, pageSize : number, name : string) {
     })
 }
 
-getMenuInfo(Pages.pageNum , Pages.pageSize, Pages.InputMenuName)
+onMounted(() =>{
+    // 调用获取分页信息函数
+    getMenuInfo(Pages.pageNum , Pages.pageSize, Pages.InputMenuName)
+})
 
 </script>
 

@@ -111,6 +111,15 @@ export function getRolePage(pageNum : number, pageSize : number, name : string){
     })
 }
 
+// 新增或者更新角色信息
+export function addOrUpdateRole(data : any){
+    return request({
+        url : '/role/save',
+        method : 'post',
+        data
+    })
+}
+
 // 角色菜单管理权限分配
 export function roleMenu(roleId : number , data : any){
     return request({
@@ -168,5 +177,13 @@ export function getFilePage(pageNum : number, pageSize : number, name? : string)
             pageSize,
             name
         }
+    })
+}
+
+// 根据文件id删除文件
+export function deleteFile(id : number){
+    return request({
+        url : `file/delete/${id}`,
+        method : 'post',
     })
 }

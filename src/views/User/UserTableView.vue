@@ -221,7 +221,6 @@
             </template>
         </el-upload>
       </el-dialog>
-
     </div>
   </div>
 </template>
