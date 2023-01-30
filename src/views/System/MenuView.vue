@@ -37,12 +37,12 @@
         <div class="pager">
           <el-pagination 
           small background layout="total, sizes, prev, pager, next, jumper" 
-          :page-size="5"
+          :page-size="Pages.pageSize"
           :page-sizes="[5, 10, 20, 30]"
-          :current-page="1"
-          @current-change=""
-          @size-change=""  
-          :total="10" 
+          :current-page="Pages.pageNum"
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"  
+          :total="total" 
           class="mt-4" />
         </div>
     </div>
@@ -70,15 +70,37 @@ var Pages = reactive({
   InputMenuName : '',
 })
 
+// 用户总数，暂定为100个
+const total = ref(100)
+
 // 获取菜单分页信息
 function getMenuInfo(pageNum : number, pageSize : number, name : string) {
     getMenuPage(pageNum , pageSize , name).then(res =>{
         if(res.code === '200'){
             tableData.value = res.data.records
+            total.value = res.data.total
             // console.log(res)
         }
     })
 }
+
+// 通过输入的信息获取用户信息，搜索
+function getPageInfoByInput(){
+    getMenuInfo(Pages.pageNum , Pages.pageSize, Pages.InputMenuName )
+}
+
+// 页数更改事件
+function handleCurrentChange(val : number){
+  Pages.pageNum = val
+  getPageInfoByInput()
+}
+
+// 页Size改变
+function handleSizeChange(val : number){
+  Pages.pageSize = val
+  getPageInfoByInput()
+}
+
 
 onMounted(() =>{
     // 调用获取分页信息函数

@@ -5,7 +5,7 @@
               :label-position="labelPosition"
               label-width="100px"
               :model="formUserInfo"
-              style="max-width: 380px"
+              style="max-width: 400px"
             >
                 <el-row :gutter="20">
                     <el-col :span="24" :offset="0">
@@ -17,13 +17,12 @@
                             </div>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="24" :offset="0">
-                        <el-form-item label="用户名">
+
+                    <el-col :span="24" :offset="0" class="name">
+                        <el-form-item label="用户名" style="max-width: 180px;">
                           <el-input disabled v-model="formUserInfo.username" />
                         </el-form-item>
-                    </el-col>
-                    <el-col :span="24" :offset="0">
-                        <el-form-item label="昵称">
+                        <el-form-item label="昵称"  style="max-width: 180px;">
                           <el-input v-model="formUserInfo.nickname" />
                         </el-form-item>
                     </el-col>
@@ -48,6 +47,21 @@
                 </el-row>
             </el-form>
         </div>
+
+        <!-- 代办事项 -->
+        <div class="todo-wrap">
+          <div class="todo-title">
+            待办事项
+          </div>
+          <el-scrollbar height="400px">
+            <div class="todo-list" v-for="(item, index) in todoList" :key="index">
+              <span>{{ item.desc }}</span>
+              <el-button type="success" v-show="item.done" size="small">已完成</el-button>
+              <el-button type="danger" v-show="!item.done" size="small">未完成</el-button>
+            </div>
+          </el-scrollbar>
+        </div>
+
         <!-- 头像上传对话框 -->
         <div class="dialog-uploadAvatar">
             <el-dialog v-model="dialogUploadAvatar" title="上传要导入的图片文件">
@@ -104,6 +118,29 @@ const uploadAvatar = ref()
 const dialogImageUrl = ref('')
 // 上传链接前缀
 const uploadUrl = 'http://localhost:8000'
+// 代办事项
+const todoList = ref([
+  {
+    desc : '和朋友同事一起玩王者，吃鸡',
+    done : true
+  },
+  {
+    desc : '下班写今日总结',
+    done : false
+  },
+  {
+    desc : '中午打卡，吃饭，下去买一瓶快乐水',
+    done : true
+  },
+  {
+    desc : '给项目经理演示项目成果，汇报项目进度，查看同事新提交的bug',
+    done : false
+  },
+  {
+    desc : '上班打卡',
+    done : true
+  },
+])
 
 // 当前用户的信息
 const formUserInfo = reactive({
@@ -194,7 +231,7 @@ function handleUploadError(){
     
 <style lang="less" scoped>
 .userInfo{
-
+    display: flex;
     .userInfo-wrap{
         padding: 20px;
         width: fit-content;
@@ -202,6 +239,11 @@ function handleUploadError(){
         // border: 1px #3182BD solid;
         // box-shadow: 0 0 7px #3182BD;
         background-color: white;
+
+        .name{
+          display: flex;
+          justify-content: space-between;
+        }
 
         .userInfo-wrap-avatar{
             width: 80px;
@@ -218,6 +260,30 @@ function handleUploadError(){
         }
     }
 
+    .todo-wrap{
+      margin-left: 20px;
+      background-color: #fff;
+      width: 56vw;
+
+      .todo-title{
+        padding: 20px;
+        border-bottom: 1px solid #e4e7ed;
+        font-size: 14px;
+      }
+
+      .todo-list{
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #f5f5f5;
+        font-size: 14px;
+
+        span{
+          padding-left: 8px;
+        }
+      }
+
+    }
     .upload-submit{
     display: flex;
     align-items: center;
