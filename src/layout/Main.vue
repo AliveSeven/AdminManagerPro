@@ -15,7 +15,6 @@ import { ref, onMounted } from 'vue'
 import { useRoute, RouterView } from 'vue-router'
 import { useState } from '@/stores/state'
 import { computed } from "vue";
-import { getRoleMenuByUserId } from '@/utils/api'
 import Ex403 from '@/views/Exception/Ex403.vue'
 
 interface Menu{
