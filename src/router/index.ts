@@ -90,17 +90,21 @@ router.beforeEach((to , from , next) =>{
   setRouteName()
 
   // 如果当前路由是登录
-  if(to.name === 'Login'){
+  if(to.name === 'Login'){  
     const token = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user') as string).token : ''
-    // 检查token是否过期
-    isExpiration(token).then(res =>{
-      // 如果token没有过期，之间跳到主控台
-      if(res.data){
-        next("/home/dashBoard")
-      }else {
-        next()
-      }
-    })
+    if(token != ''){
+      // 检查token是否过期
+      isExpiration(token).then(res =>{
+        // 如果token没有过期，之间跳到主控台
+        if(res.data){
+          next("/home/dashBoard")
+        }else {
+          next()
+        }
+      })
+    } else {
+      next()
+    }
   }
 
   // 未找到路由的情况
