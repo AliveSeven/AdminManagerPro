@@ -5,7 +5,7 @@
               :label-position="labelPosition"
               label-width="100px"
               :model="formUserInfo"
-              style="max-width: 400px"
+              style="max-width: 25vw"
             >
                 <el-row :gutter="20">
                     <el-col :span="24" :offset="0">
@@ -19,10 +19,10 @@
                     </el-col>
 
                     <el-col :span="24" :offset="0" class="name">
-                        <el-form-item label="用户名" style="max-width: 180px;">
+                        <el-form-item label="用户名" style="max-width: 10vw;">
                           <el-input disabled v-model="formUserInfo.username" />
                         </el-form-item>
-                        <el-form-item label="昵称"  style="max-width: 180px;">
+                        <el-form-item label="昵称"  style="max-width: 10vw;">
                           <el-input v-model="formUserInfo.nickname" />
                         </el-form-item>
                     </el-col>
@@ -60,6 +60,121 @@
               <el-button type="danger" v-show="!item.done" size="small">未完成</el-button>
             </div>
           </el-scrollbar>
+        </div>
+
+        <!-- 项目进度 -->
+        <div class="project-wrap">
+            <div class="title">
+              项目进度
+            </div>
+            <el-table ref="tableRef" row-key="start" :data="tableData" style="max-width: 50vw" height="246" max-height="300">
+              <el-table-column prop="name" label="项目名" width="250" />
+              <el-table-column
+                prop="start"
+                label="项目开始时间"
+                sortable
+                width="180"
+                column-key="start"
+              />
+              <el-table-column
+                prop="end"
+                label="项目结束时间"
+                sortable
+                width="180"
+                column-key="end"
+              />
+              <el-table-column prop="progress" label="进度" :formatter="formatter" />
+
+              <el-table-column
+                prop="tag"
+                label="Tag"
+                width="100"
+                :filters="[
+                  { text: 'Home', value: 'Home' },
+                  { text: 'Office', value: 'Office' },
+                ]"
+                :filter-method="filterTag"
+                filter-placement="bottom-end"
+              >
+                <template #default="scope">
+                  <el-tag
+                    :type="scope.row.tag === 'Home' ? '' : 'success'"
+                    disable-transitions
+                    >{{ scope.row.tag }}</el-tag
+                  >
+                </template>
+              </el-table-column>
+            </el-table>
+        </div>
+
+        <!-- 快捷操作 -->
+        <div class="quick-wrap">
+          <div class="title">
+            快捷操作
+          </div>
+
+          <div class="quick">
+            <div class="wrap" v-for="(item, index) in quickAction" :key="index">
+              <el-icon :size="35" :color="item.color">
+                <component :is='item.icon' ></component>
+              </el-icon>
+              <span>{{ item.desc }}</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- 动态 -->
+        <div class="moments-wrap">
+          <div class="title">
+            动态
+          </div>
+          <el-scrollbar height="352px">
+            <div class="moment" v-for="(item, index) in moments" :key="index">
+              <div class="person">
+                <div class="avatar">
+                  <img :src="item.avatar" alt="">
+                </div>
+                <div class="user">
+                  <span>{{ item.user }}</span>
+                </div>
+              </div>
+              <div class="desc-wrap">
+                <div class="desc">{{ item.desc }}</div>
+                <div class="data">{{ item.data }}</div>
+              </div>
+            </div>
+          </el-scrollbar>
+        </div>
+
+        <!-- 收藏 -->
+        <div class="collect-wrap">
+          <div class="title">
+            收藏夹
+          </div>
+          <div class="form-table">
+              <el-table :data="collectData" @current-change="" :border="true" ref="singleTableRef" height="350">
+                  <el-table-column label="收藏夹封面" width="100" align="center" header-align="center">
+                    <template #default="scope">
+                      <el-image
+                        style="width: 75px; height: 75px;"
+                        :src="scope.row.cover"
+                        :zoom-rate="1.2"
+                        lazy
+                        fit="cover"
+                      />
+                    </template>
+                  </el-table-column>
+                  <el-table-column prop="name" label="收藏夹名称" width="200" />
+                  <el-table-column prop="desc" label="收藏夹描述" />
+                  <el-table-column label="操作" width="150">
+                      <template #default="scope">
+                          <el-button size="small" @click="" type="warning" plain>编辑</el-button>
+                          <el-button size="small" type="danger" @click="">删除</el-button>
+                      </template>
+                  </el-table-column>
+              </el-table>
+          </div>
         </div>
 
         <!-- 头像上传对话框 -->
@@ -103,8 +218,16 @@
 import { reactive, ref, nextTick } from 'vue'
 import { useState } from '@/stores/state'
 import { getUserById , addOrUpdateUser } from '@/utils/api'
-import { ElMessage } from 'element-plus'
+import { ElMessage , ElTable , type TableColumnCtx } from 'element-plus'
 import type { UploadProps } from 'element-plus'
+
+interface Project {
+  start: string
+  end: string
+  name: string
+  progress: number
+  tag: string
+}
 
 // pina数据
 const state = useState();
@@ -140,6 +263,127 @@ const todoList = ref([
     desc : '上班打卡',
     done : true
   },
+  
+])
+
+// 项目进度表单
+const tableData: Project[] = [
+  {
+    start: '2023-01-01',
+    end: '2023-01-30',
+    name: '港台AliveGame游戏H5开发',
+    progress: 100,
+    tag: 'Home',
+  },
+  {
+    start: '2023-01-22',
+    end: '2023-02-09',
+    name: '东方麦当劳🍔H5管理页面开发',
+    progress: 80,
+    tag: 'Office',
+  },
+  {
+    start: '2023-02-01',
+    end: '2023-02-30',
+    name: '新加坡金融App-C099开发',
+    progress: 90,
+    tag: 'Home',
+  },
+  {
+    start: '2023-02-19',
+    end: '2023-03-05',
+    name: '超级人工智能后台管理框架开发',
+    progress: 50,
+    tag: 'Office',
+  },
+]
+
+// 快捷操作icon
+const quickAction = ref([
+{
+    icon : 'PieChart',
+    desc : '主控台',
+    color : 'rgb(104, 199, 85)'
+  },
+  {
+    icon : 'Setting',
+    desc : '系统管理',
+    color : 'rgb(250, 178, 81)'
+  },
+  {
+    icon : 'Edit',
+    desc : '动态发布',
+    color : 'rgb(24, 144, 255)'
+  },
+  {
+    icon : 'Histogram',
+    desc : '项目管理',
+    color : 'rgb(104, 199, 85)'
+  },
+  {
+    icon : 'Finished',
+    desc : '代办事项',
+    color : 'rgb(250, 178, 81)'
+  },
+  {
+    icon : 'Message',
+    desc : '信息',
+    color : 'rgb(24, 144, 255)'
+  },
+])
+
+// 动态
+const moments = ref([
+  {
+    user : 'Alive',
+    avatar : 'https://v1.naiveadmin.com/assets/schoolboy.9f04cdf7.png',
+    desc : 'Ah Jung 刚才把工作台页面随便写了一些，凑合能看了！',
+    data : '2023-02-04 22:37:16'
+  },
+  {
+    user : 'Alive',
+    avatar : 'https://v1.naiveadmin.com/assets/schoolboy.9f04cdf7.png',
+    desc : 'Ah Jung 刚才把工作台页面随便写了一些，凑合能看了！',
+    data : '2023-02-04 22:37:16'
+  },
+  {
+    user : 'Alive',
+    avatar : 'https://v1.naiveadmin.com/assets/schoolboy.9f04cdf7.png',
+    desc : 'Ah Jung 刚才把工作台页面随便写了一些，凑合能看了！',
+    data : '2023-02-04 22:37:16'
+  },
+  {
+    user : 'Alive',
+    avatar : 'https://v1.naiveadmin.com/assets/schoolboy.9f04cdf7.png',
+    desc : 'Ah Jung 刚才把工作台页面随便写了一些，凑合能看了！',
+    data : '2023-02-04 22:37:16'
+  },
+
+])
+
+// 收藏夹
+const collectData = ref([
+  {
+    cover : 'https://dummyimage.com/400x400/797ff2/a3f279&text=Frank',
+    name : '视频收藏夹',
+    desc : '收藏的相关视频'
+  },
+  {
+    cover : 'https://dummyimage.com/400x400/797ff2/a3f279&text=Frank',
+    name : '动态收藏夹',
+    desc : '动态的相关文章'
+  },
+  {
+    cover : 'https://dummyimage.com/400x400/797ff2/a3f279&text=Frank',
+    name : '学习收藏夹',
+    desc : '学习的相关视频'
+  },
+  {
+    cover : 'https://dummyimage.com/400x400/797ff2/a3f279&text=Frank',
+    name : '学习收藏夹',
+    desc : '学习的相关视频'
+  },
+  
 ])
 
 // 当前用户的信息
@@ -190,6 +434,14 @@ function submitForm(FormData : any){
   })
 }
 
+const filterTag = (value: string, row: Project) => {
+  return row.tag === value
+}
+
+const formatter = (row: Project, column: TableColumnCtx<Project>) => {
+  return row.progress
+}
+
 nextTick(() =>{
   
 })
@@ -232,6 +484,7 @@ function handleUploadError(){
 <style lang="less" scoped>
 .userInfo{
     display: flex;
+    flex-wrap: wrap;
     .userInfo-wrap{
         padding: 20px;
         width: fit-content;
@@ -263,7 +516,8 @@ function handleUploadError(){
     .todo-wrap{
       margin-left: 20px;
       background-color: #fff;
-      width: 56vw;
+      width: 60vw;
+      overflow: hidden;
 
       .todo-title{
         padding: 20px;
@@ -281,9 +535,131 @@ function handleUploadError(){
         span{
           padding-left: 8px;
         }
+
+        button{
+          margin-right: 5px;
+        }
+
+        &:hover{
+          background-color: #f5f7fa;
+        }
       }
 
     }
+
+    .project-wrap{
+      margin-top: 20px;
+
+      .title{
+        padding: 14px;
+        border-bottom: 1px solid #e4e7ed;
+        font-size: 14px;
+        background-color: #fff;
+      }
+    }
+
+    .quick-wrap{
+      background-color: #fff;
+      margin-top: 20px;
+      margin-left: 20px;
+      width: 46vw;
+      height: 295.5px;
+
+      .title{
+        padding: 14px 20px;
+        border-bottom: 1px solid #e4e7ed;
+        font-size: 14px;
+      }
+
+      .quick{
+        display: flex;
+        flex-wrap: wrap;
+
+          .wrap{
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          padding: 0 30px;
+          width: 12.15vw;
+          border-bottom: 1px #e4e7ed solid;
+          border-right: 1px #e4e7ed solid;
+          height: 121.8px;
+
+          span{
+            padding-top: 5px;
+          }
+
+          &:hover{
+            cursor: pointer;
+            box-shadow: 0 0 10px #ddd;
+          }
+        }
+      }
+    }
+
+    .moments-wrap{
+      background-color: #fff;
+      margin: 20px 0;
+      width: 41.2vw;
+      overflow: hidden;
+
+      .title{
+        padding: 14px 20px;
+        border-bottom: 1px solid #e4e7ed;
+        font-size: 14px;
+      }
+
+      .moment{
+        display: flex;
+        align-items: center;
+        padding: 10px 20px;
+        border-bottom: 1px solid #e4e7ed;
+
+        .person{
+          padding-right: 15px;
+
+          img{
+            width: 40px;
+            height: 40px;
+          }
+
+          .user{
+            font-size: 12px;
+            margin-top: 2px;
+            text-align: center;
+          }
+        }
+
+        .desc-wrap{
+          flex: 1;
+          margin-left: 5px;
+
+          .data{
+            --tw-text-opacity: 1;
+            color: rgb(107 114 128 / var(--tw-text-opacity));
+            font-size: .75rem;
+            line-height: 1rem;
+            padding-top: 15px;
+          }
+        }
+      }
+    }
+
+    .collect-wrap{
+      background-color: #fff;
+      margin: 20px 0;
+      margin-left: 20px;
+      width: 46vw;
+      overflow: hidden;
+
+      .title{
+        padding: 14px 20px;
+        border-bottom: 1px solid #e4e7ed;
+        font-size: 14px;
+      }
+    }
+
     .upload-submit{
     display: flex;
     align-items: center;
@@ -295,7 +671,7 @@ function handleUploadError(){
       flex-direction: column;
       justify-content: center;
     }
-  }
+    }
 
 }
 </style>
