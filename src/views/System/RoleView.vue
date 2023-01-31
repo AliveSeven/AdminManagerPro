@@ -96,7 +96,7 @@
 import { reactive, ref, onMounted, computed } from 'vue'
 import { ElMessage, ElTable, ElTree, FormRules, FormInstance } from 'element-plus'
 import { Search, Menu, Plus, Remove, } from '@element-plus/icons-vue'
-import { getRolePage, roleMenu, getRoleMenu, getRoleMenuByUserId, addOrUpdateRole } from '@/utils/api';
+import { getRolePage, roleMenu, getRoleMenu, getRoleMenuByUserId, addOrUpdateRole, getMenus } from '@/utils/api';
 import { useState } from '@/stores/state'
 import { useRouter } from 'vue-router'
 
@@ -158,6 +158,9 @@ const menuHalfArray: any = ref([])
 // 传入的菜单id数组
 const menuArrayIds: any = ref([])
 
+// 传入的菜单树
+const tree : Tree[] = []
+
 const data: Tree[] = [
   {
     label: '主控台',
@@ -190,6 +193,16 @@ const data: Tree[] = [
     label: '个人信息',
     id: 7,
     disabled: true,
+  },
+  {
+    label: '个人事务管理',
+    id: 8,
+    children: [
+      {
+        label: '代办事项管理',
+        id: 9
+      },
+    ],
   },
 ]
 
@@ -402,9 +415,18 @@ async function handleAdd(formData : any , formEl?: FormInstance | undefined){
     })
 }
 
+// 获取所有菜单信息
+const getAllMenu = () =>{
+  getMenus().then((res) =>{
+    console.log("获取所有菜单信息" , res)
+  })
+}
+
 onMounted(() => {
   // 调用获取分页信息函数
   getRolePageInfo(Pages.pageNum, Pages.pageSize, Pages.InputRoleName)
+  // 获取所有菜单信息
+  getAllMenu()
 })
 
 </script>

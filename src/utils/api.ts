@@ -158,6 +158,14 @@ export function getMenuPage(pageNum : number, pageSize : number, name : string){
     })
 }
 
+// 获取所有菜单信息
+export function getMenus(){
+    return request({
+        url : '/menu',
+        method : 'get',
+    })
+}
+
 // 上传文件
 export function uploadFile(data : any){
     return request({

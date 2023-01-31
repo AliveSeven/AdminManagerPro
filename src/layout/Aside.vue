@@ -19,6 +19,10 @@
         <el-icon><PieChart /></el-icon>
         <span class="title">主控台</span>
       </el-menu-item>
+      <el-menu-item index="/home/userInfo" class="title">
+        <el-icon><User /></el-icon>
+        <span class="title">个人信息</span>
+      </el-menu-item>
       <el-sub-menu index="/home/system">
         <template #title>
           <el-icon><Setting /></el-icon>
@@ -29,10 +33,13 @@
         <el-menu-item index="/home/system/menu"><el-icon><Operation /></el-icon>菜单管理</el-menu-item>
         <el-menu-item index="/home/system/file"><el-icon><Operation /></el-icon>文件管理</el-menu-item>
       </el-sub-menu>
-      <el-menu-item index="/home/userInfo" class="title">
-        <el-icon><User /></el-icon>
-        <span class="title">个人信息</span>
-      </el-menu-item>
+      <el-sub-menu index="/home/personal">
+        <template #title>
+          <el-icon><HomeFilled /></el-icon>
+          <span class="title">个人事务管理</span>
+        </template>
+        <el-menu-item index="/home/personal/todoList"><el-icon><Finished /></el-icon>代办事项管理</el-menu-item>
+      </el-sub-menu>
     </el-menu>
   </div>
 
@@ -40,7 +47,7 @@
 
 <script lang="ts" setup>
 import { useState } from '../stores/state'
-import { PieChart , Operation, Setting, Menu, User } from '@element-plus/icons-vue'
+import { PieChart , Operation, Setting, HomeFilled, User, Finished } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router';
 
 const route = useRoute();

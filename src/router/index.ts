@@ -50,7 +50,18 @@ const router = createRouter({
         {
           path : 'userInfo',
           name : 'UserInfo',
-          component : () => import('@/views/User/UserInfo.vue')
+          component : () => import('@/views/User/UserInfo.vue'),
+        },
+        {
+          path : 'personal',
+          name : 'Personal',
+          children : [
+            {
+              path: 'todoList',
+              name: 'TodoList',
+              component: () => import('@/views/Personal/TodoList.vue')
+            },
+          ]
         },
       ]
     },
