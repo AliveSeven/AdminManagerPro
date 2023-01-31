@@ -358,7 +358,6 @@ const moments = ref([
     desc : 'Ah Jung 刚才把工作台页面随便写了一些，凑合能看了！',
     data : '2023-02-04 22:37:16'
   },
-
 ])
 
 // 收藏夹
@@ -383,7 +382,6 @@ const collectData = ref([
     name : '学习收藏夹',
     desc : '学习的相关视频'
   },
-  
 ])
 
 // 当前用户的信息
