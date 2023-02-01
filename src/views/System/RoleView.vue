@@ -45,7 +45,7 @@
     <!-- 菜单管理的对话框 -->
     <div class="dialog-menu">
       <el-dialog v-model="dialogMenuVisible" title="菜单管理">
-        <el-tree :props="props" ref="treeRef" :data="data" show-checkbox node-key="id" @check="handleNodeClick" />
+        <el-tree :props="props" ref="treeRef" :data="tree" show-checkbox node-key="id" @check="handleNodeClick" />
         <template #footer>
           <span class="dialog-footer">
             <el-button @click="dialogMenuVisible = false">Cancel</el-button>
@@ -161,50 +161,50 @@ const menuArrayIds: any = ref([])
 // 传入的菜单树
 const tree : Tree[] = []
 
-const data: Tree[] = [
-  {
-    label: '主控台',
-    id: 1,
-    disabled: true,
-  },
-  {
-    label: '系统管理',
-    id: 2,
-    children: [
-      {
-        label: '角色管理',
-        id: 3
-      },
-      {
-        label: '用户管理',
-        id: 4
-      },
-      {
-        label: '菜单管理',
-        id: 5
-      },
-      {
-        label: '文件管理',
-        id: 6
-      },
-    ],
-  },
-  {
-    label: '个人信息',
-    id: 7,
-    disabled: true,
-  },
-  {
-    label: '个人事务管理',
-    id: 8,
-    children: [
-      {
-        label: '代办事项管理',
-        id: 9
-      },
-    ],
-  },
-]
+// const data: Tree[] = [
+//   {
+//     label: '主控台',
+//     id: 1,
+//     disabled: true,
+//   },
+//   {
+//     label: '系统管理',
+//     id: 2,
+//     children: [
+//       {
+//         label: '角色管理',
+//         id: 3
+//       },
+//       {
+//         label: '用户管理',
+//         id: 4
+//       },
+//       {
+//         label: '菜单管理',
+//         id: 5
+//       },
+//       {
+//         label: '文件管理',
+//         id: 6
+//       },
+//     ],
+//   },
+//   {
+//     label: '个人信息',
+//     id: 7,
+//     disabled: true,
+//   },
+//   {
+//     label: '个人事务管理',
+//     id: 8,
+//     children: [
+//       {
+//         label: '代办事项管理',
+//         id: 9
+//       },
+//     ],
+//   },
+// ]
 
 // 当前角色已有的菜单权限ID
 const currentRoleMenu = ref()
@@ -419,6 +419,41 @@ async function handleAdd(formData : any , formEl?: FormInstance | undefined){
 const getAllMenu = () =>{
   getMenus().then((res) =>{
     console.log("获取所有菜单信息" , res)
+    if(res.code === '200'){
+      // 对父亲路由进行处理
+      res.data.parent.forEach((el : any) => {
+        // 把传过来的数据用一个中间树节点temp进行渲染
+        let temp : Tree = {
+          label : el.name ,
+          id : el.id,
+          children : [],
+          disabled: false
+        }
+        if(el.id == 2 || el.id == 7){
+          temp.disabled = true
+        }
+        // 渲染后推进parent树中
+        tree.push(temp)
+      });
+
+      // 再对子路由进行处理
+      res.data.children.forEach((el : any) => {
+        // 把传过来的数据用一个中间树节点childtemp进行渲染
+        let childtemp : Tree = {
+          label : el.name,
+          id : el.id
+        }
+        // 再遍历一次父节点，找出子节点中pid和父节点id相同的父节点出来
+        tree.forEach((pel : any) =>{
+          if(pel.id == el.pid){
+            // 让这个父节点把字节点推进去
+            pel.children.push(childtemp)
+          }
+        })
+      });
+
+      console.log("树形控件",tree)
+    }
   })
 }
 

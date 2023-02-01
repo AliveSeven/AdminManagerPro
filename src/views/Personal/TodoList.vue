@@ -1,9 +1,9 @@
 <template>
-    <div class="menuView">
+    <div class="todoList">
         <div class="form">
             <div>
-                <span>菜单名称</span>
-                <el-input v-model="Pages.InputMenuName" class="w-50 m-2" placeholder="请输入菜单名称" :suffix-icon="Search" />
+                <span class="todo-name">待办事项名称</span>
+                <el-input v-model="Pages.InputMenuName" class="w-50 m-2" placeholder="请输入事项名称" :suffix-icon="Search" />
             </div>
             <el-button type="primary" :icon="Search" class="form-btn" @click="">搜索</el-button>
 
@@ -86,7 +86,7 @@ function getMenuInfo(pageNum : number, pageSize : number, name : string) {
 
 // 通过输入的信息获取用户信息，搜索
 function getPageInfoByInput(){
-    getMenuInfo(Pages.pageNum , Pages.pageSize, Pages.InputMenuName )
+    getMenuInfo(Pages.pageNum , Pages.pageSize, Pages.InputMenuName)
 }
 
 // 页数更改事件
@@ -110,6 +110,9 @@ onMounted(() =>{
 </script>
 
 <style lang="less" scoped>
+.todoList{
+    background-color: white;
+}
 .form {
   display: flex;
   align-items: center;
@@ -133,6 +136,10 @@ onMounted(() =>{
         text-overflow: ellipsis;
         /* 文字超出两行的部分为省略号 */
       }
+  }
+  
+  .todo-name{
+    width: 50%;
   }
 }
 .menuView {

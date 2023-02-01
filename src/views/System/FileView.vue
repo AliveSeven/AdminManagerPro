@@ -1,7 +1,7 @@
 <template>
     <div class="fileView">
         <div class="form">
-            <div class="phone">
+            <div>
                 <span>文件名称</span>
                 <el-input v-model="Pages.InputFileName" class="w-50 m-2" placeholder="请输入文件名称" :suffix-icon="Search" />
             </div>
