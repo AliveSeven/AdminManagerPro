@@ -249,6 +249,10 @@ function getRolePageInfo(pageNum: number, pageSize: number, name: string) {
       // console.log(res)
     }
   }).catch((err) => {
+    ElMessage({
+      message: '获取数据报错',
+      type: 'error',
+    })
     console.log('获取数据报错', err)
   })
 }

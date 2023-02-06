@@ -55,7 +55,7 @@
           </div>
           <el-scrollbar height="400px">
             <div class="todo-list" v-for="(item, index) in todoList" :key="index">
-              <span>{{ item.desc }}</span>
+              <span>{{ item.description }}</span>
               <el-button type="success" v-show="item.done" size="small">已完成</el-button>
               <el-button type="danger" v-show="!item.done" size="small">未完成</el-button>
             </div>
@@ -217,7 +217,7 @@
 <script setup lang="ts">
 import { reactive, ref, nextTick, onMounted } from 'vue'
 import { useState } from '@/stores/state'
-import { getUserById , addOrUpdateUser } from '@/utils/api'
+import { getUserById , addOrUpdateUser , getTodoListByUserId } from '@/utils/api'
 import { ElMessage , ElTable , type TableColumnCtx } from 'element-plus'
 import type { UploadProps } from 'element-plus'
 
@@ -242,26 +242,9 @@ const uploadUrl = 'http://localhost:8000'
 // 代办事项
 const todoList = ref([
   {
-    desc : '和朋友同事一起玩王者，吃鸡',
+    description : '',
     done : true
   },
-  {
-    desc : '下班写今日总结',
-    done : false
-  },
-  {
-    desc : '中午打卡，吃饭，下去买一瓶快乐水',
-    done : true
-  },
-  {
-    desc : '给项目经理演示项目成果，汇报项目进度，查看同事新提交的bug',
-    done : false
-  },
-  {
-    desc : '上班打卡',
-    done : true
-  },
-  
 ])
 
 // 项目进度表单
@@ -442,11 +425,35 @@ nextTick(() =>{
   
 })
 
+// 获取相关信息
+function getCurrentUserInfo(){
+  const userId = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string).id : null
+  if(userId != null){
+    getTodoListByUserId(userId).then((res) =>{
+      if(res.code === '200'){
+        todoList.value = res.data
+      }
+    }).catch((err) => {
+      ElMessage({
+        message: '获取数据报错',
+        type: 'error',
+      })
+    })
+  } else {
+    ElMessage({
+      message: '用户未登录或登录失效',
+      type: 'error',
+    })
+  }
+}
+
 onMounted(() => {
   // 获取pinia中的state数据
   // state.getCurrentUserInfo()
   // 调用函数
   getCurrentUserById(state.currentUserInfo.id)
+  // 获取全部代办事项
+  getCurrentUserInfo()
 })
 
 

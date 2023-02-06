@@ -2,6 +2,7 @@ import { ref, reactive ,computed } from 'vue'
 // 想要使用必须先引入 defineStore
 import { defineStore } from 'pinia'
 import { getRoleMenuByUserId } from '@/utils/api'
+import router from '@/router'
 
 export const useState = defineStore('useState',{   
   state(){
@@ -51,6 +52,7 @@ export const useState = defineStore('useState',{
     // 退出登录，注销
     loginout(){
       localStorage.removeItem('user')
+      localStorage.removeItem("currentMenuInfo")
       // 初始化currentUserInfo
       this.currentUserInfo = reactive({
         id : 100,
@@ -58,7 +60,7 @@ export const useState = defineStore('useState',{
         nickname : '',
         avatarUrl : '',
       })
-      // 后续做路由跳转到login的操作
+      router.go(0)
     },
 
     // 改变当前用户信息

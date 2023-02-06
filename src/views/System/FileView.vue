@@ -25,7 +25,6 @@
                 <el-table-column prop="url" label="文件链接" />
                 <el-table-column label="操作" width="180">
                     <template #default="scope">
-                        <el-button size="small" @click="" type="warning" plain>编辑</el-button>
                         <el-button size="small" type="danger" @click="dialogDeleteFiles = true">删除</el-button>
                     </template>
                 </el-table-column>

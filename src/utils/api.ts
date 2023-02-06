@@ -205,6 +205,17 @@ export function addOrUpdateTodoList(data : any){
     })
 }
 
+// 根据userId查询全部代办事项
+export function getTodoListByUserId(userId : number){
+    return request({
+        url : '/todolist/getByUserId',
+        method : 'get',
+        params : {
+            userId
+        }
+    })
+}
+
 // 获取待办事项分页
 export function getTodoListPage(pageNum : number, pageSize : number, userId : number , description? : string){
     return request({
@@ -222,7 +233,7 @@ export function getTodoListPage(pageNum : number, pageSize : number, userId : nu
 // 根据id删除待办事项
 export function deleteTodoList(id : number){
     return request({
-        url : 'todolist/delete',
+        url : '/todolist/delete',
         method : 'post',
         params : {
             id
