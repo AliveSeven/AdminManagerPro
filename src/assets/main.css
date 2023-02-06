@@ -62,6 +62,6 @@ html {
 .fade-enter-active,
 .fade-leave-active {
   /* transition: all 1s; */
-  transition: all .6s cubic-bezier(.55, 0, .1, 1);
+  transition: all .4s cubic-bezier(.55, 0, .1, 1);
 }
 

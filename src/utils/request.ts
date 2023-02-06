@@ -1,5 +1,7 @@
 import axios from 'axios'
 import router from "@/router";
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 const request = axios.create({
     baseURL: "http://localhost:8000",
@@ -23,6 +25,7 @@ declare module "axios" {
 // 可以自请求发送前对请求做一些处理
 // 比如统一加token，对请求参数统一加密
 request.interceptors.request.use(config => {
+    NProgress.start();
     config.headers['Content-Type'] = 'application/json;charset=utf-8';
     let user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : null
     if (user) {
@@ -61,12 +64,15 @@ request.interceptors.response.use(
             // });
             router.push("/404")
         }
+        NProgress.done();
         return res;
     },
     error => {
         console.log('err' + error) // for debug
+        NProgress.done();
         return Promise.reject(error)
     }
+    
 )
 
 export default request

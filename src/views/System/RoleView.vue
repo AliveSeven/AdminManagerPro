@@ -263,8 +263,8 @@ function getPageInfoByInput() {
 function reGetPageInfo() {
   // 页数重新定位到第一页
   Pages.pageNum = 1,
-    Pages.pageSize = 10,
-    Pages.InputRoleName = ''
+  Pages.pageSize = 10,
+  Pages.InputRoleName = ''
   getPageInfoByInput()
 }
 
@@ -418,7 +418,7 @@ async function handleAdd(formData : any , formEl?: FormInstance | undefined){
 // 获取所有菜单信息
 const getAllMenu = () =>{
   getMenus().then((res) =>{
-    console.log("获取所有菜单信息" , res)
+    // console.log("获取所有菜单信息" , res)
     if(res.code === '200'){
       // 对父亲路由进行处理
       res.data.parent.forEach((el : any) => {
@@ -441,7 +441,11 @@ const getAllMenu = () =>{
         // 把传过来的数据用一个中间树节点childtemp进行渲染
         let childtemp : Tree = {
           label : el.name,
-          id : el.id
+          id : el.id,
+          disabled: false
+        }
+        if(el.id == 3){
+          childtemp.disabled = true
         }
         // 再遍历一次父节点，找出子节点中pid和父节点id相同的父节点出来
         tree.forEach((pel : any) =>{
@@ -452,7 +456,7 @@ const getAllMenu = () =>{
         })
       });
 
-      console.log("树形控件",tree)
+      // console.log("树形控件",tree)
     }
   })
 }

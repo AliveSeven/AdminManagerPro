@@ -77,6 +77,7 @@ state.getCurrentUserInfo()
 const showLoginOut = ref(false)
 // 点击退出登录
 const LoginOut = () =>{
+    showLoginOut.value = false
     // 执行退出账号
     state.loginout()
     router.push({path : '/login'})

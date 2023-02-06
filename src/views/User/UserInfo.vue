@@ -215,7 +215,7 @@
 </template>
     
 <script setup lang="ts">
-import { reactive, ref, nextTick } from 'vue'
+import { reactive, ref, nextTick, onMounted } from 'vue'
 import { useState } from '@/stores/state'
 import { getUserById , addOrUpdateUser } from '@/utils/api'
 import { ElMessage , ElTable , type TableColumnCtx } from 'element-plus'
@@ -237,8 +237,6 @@ const labelPosition = ref('top')
 const dialogUploadAvatar = ref(false)
 // 上传的文件
 const uploadAvatar = ref()
-// 上传的图片
-const dialogImageUrl = ref('')
 // 上传链接前缀
 const uploadUrl = 'http://localhost:8000'
 // 代办事项
@@ -444,10 +442,13 @@ nextTick(() =>{
   
 })
 
-// 获取pinia中的state数据
-// state.getCurrentUserInfo()
-// 调用函数
-getCurrentUserById(state.currentUserInfo.id)
+onMounted(() => {
+  // 获取pinia中的state数据
+  // state.getCurrentUserInfo()
+  // 调用函数
+  getCurrentUserById(state.currentUserInfo.id)
+})
+
 
 // 当超出限制时，执行的钩子函数
 const handleExceed: UploadProps['onExceed'] = (files) => {

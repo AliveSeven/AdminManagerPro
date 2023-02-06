@@ -226,7 +226,7 @@
 </template>
   
 <script lang="ts" setup>
-import { ref , reactive } from 'vue'
+import { ref , reactive, onMounted } from 'vue'
 import { Search, Iphone, Promotion, Plus, Remove, Top, Bottom, UploadFilled } from '@element-plus/icons-vue'
 import { ElMessage, FormRules, FormInstance, ElTable } from 'element-plus'
 import type { UploadInstance, UploadProps } from 'element-plus'
@@ -327,13 +327,6 @@ const rules = reactive<FormRules>({
     { required: true, message: "请选择角色", trigger: "change" },
   ],
 })
-
-// 在页面渲染之前调用函数
-getPageInfoByInput()
-getRoleInfo()
-// onMounted(() => {
-//     getPageInfoByInput()
-// })
 
 // 通过分页获取用户信息
 function getPageInfo(pageNum : number, pageSize : number , username : string , email : string , phone : string) {
@@ -539,7 +532,13 @@ function TableCurrentChange(val : User){
   // currentRow  = val
 }
 
-
+// 调用函数
+// getPageInfoByInput()
+// getRoleInfo()
+onMounted(() => {
+  getPageInfoByInput()
+  getRoleInfo()
+})
 
 </script>
   

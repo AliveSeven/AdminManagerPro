@@ -195,3 +195,37 @@ export function deleteFile(id : number){
         method : 'post',
     })
 }
+
+// 新增或者更新待办事项信息
+export function addOrUpdateTodoList(data : any){
+    return request({
+        url : '/todolist/save',
+        method : 'post',
+        data
+    })
+}
+
+// 获取待办事项分页
+export function getTodoListPage(pageNum : number, pageSize : number, userId : number , description? : string){
+    return request({
+        url : '/todolist/page',
+        method : 'get',
+        params : {
+            pageNum,
+            pageSize,
+            userId,
+            description
+        }
+    })
+}
+
+// 根据id删除待办事项
+export function deleteTodoList(id : number){
+    return request({
+        url : 'todolist/delete',
+        method : 'post',
+        params : {
+            id
+        }
+    })
+}

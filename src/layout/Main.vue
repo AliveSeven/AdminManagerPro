@@ -11,10 +11,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted , computed } from 'vue'
 import { useRoute, RouterView } from 'vue-router'
 import { useState } from '@/stores/state'
-import { computed } from "vue";
 import Ex403 from '@/views/Exception/Ex403.vue'
 
 interface Menu{
@@ -41,9 +40,6 @@ const getCurrentMenuPath = () =>{
   });
 }
 
-// 获取当前角色的权限菜单
-getCurrentMenuPath()
-
 // 路由中添加key解决切换路由时页面不展示内容，刷新后才展示内容问题
 const route = useRoute();
 const key = computed(() => {
@@ -54,5 +50,11 @@ const key = computed(() => {
   }
   return route.path;
 });
+
+// 获取当前角色的权限菜单
+getCurrentMenuPath()
+
+onMounted(() => {
+})
 
 </script>
