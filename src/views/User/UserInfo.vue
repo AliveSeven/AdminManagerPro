@@ -114,9 +114,9 @@
           </div>
 
           <div class="quick">
-            <div class="wrap" v-for="(item, index) in quickAction" :key="index">
+            <div class="wrap" v-for="(item, index) in quickAction" :key="index" @click="router.push({path : `${item.url}`})">
               <el-icon :size="35" :color="item.color">
-                <component :is='item.icon' ></component>
+                <component :is='item.icon' ></component> 
               </el-icon>
               <span>{{ item.desc }}</span>
             </div>
@@ -217,9 +217,10 @@
 <script setup lang="ts">
 import { reactive, ref, nextTick, onMounted } from 'vue'
 import { useState } from '@/stores/state'
-import { getUserById , addOrUpdateUser , getTodoListByUserId } from '@/utils/api'
+import { getUserById , addOrUpdateUser , getTodoListByUserId , getProjectByUserId } from '@/utils/api'
 import { ElMessage , ElTable , type TableColumnCtx } from 'element-plus'
 import type { UploadProps } from 'element-plus'
+import router from '@/router';
 
 interface Project {
   start: string
@@ -248,63 +249,39 @@ const todoList = ref([
 ])
 
 // 项目进度表单
-const tableData: Project[] = [
-  {
-    start: '2023-01-01',
-    end: '2023-01-30',
-    name: '港台AliveGame游戏H5开发',
-    progress: 100,
-    tag: 'Home',
-  },
-  {
-    start: '2023-01-22',
-    end: '2023-02-09',
-    name: '东方麦当劳🍔H5管理页面开发',
-    progress: 80,
-    tag: 'Office',
-  },
-  {
-    start: '2023-02-01',
-    end: '2023-02-30',
-    name: '新加坡金融App-C099开发',
-    progress: 90,
-    tag: 'Home',
-  },
-  {
-    start: '2023-02-19',
-    end: '2023-03-05',
-    name: '超级人工智能后台管理框架开发',
-    progress: 50,
-    tag: 'Office',
-  },
-]
+const tableData = ref([])
 
 // 快捷操作icon
 const quickAction = ref([
 {
     icon : 'PieChart',
     desc : '主控台',
-    color : 'rgb(104, 199, 85)'
+    color : 'rgb(104, 199, 85)',
+    url : '/home/dashBoard'
   },
   {
     icon : 'Setting',
     desc : '系统管理',
-    color : 'rgb(250, 178, 81)'
+    color : 'rgb(250, 178, 81)',
+    url : '/home/system/usertable'
   },
   {
     icon : 'Edit',
     desc : '动态发布',
-    color : 'rgb(24, 144, 255)'
+    color : 'rgb(24, 144, 255)',
+    url : '/home/personal/momentsEdit'
   },
   {
     icon : 'Histogram',
     desc : '项目管理',
-    color : 'rgb(104, 199, 85)'
+    color : 'rgb(104, 199, 85)',
+    url : '/home/personal/project'
   },
   {
     icon : 'Finished',
     desc : '代办事项',
-    color : 'rgb(250, 178, 81)'
+    color : 'rgb(250, 178, 81)',
+    url : '/home/personal/todoList'
   },
   {
     icon : 'Message',
@@ -439,6 +416,18 @@ function getCurrentUserInfo(){
         type: 'error',
       })
     })
+    
+    getProjectByUserId(userId).then((res) =>{
+      if(res.code === '200'){
+        tableData.value = res.data
+      }
+    }).catch((err) => {
+      ElMessage({
+        message: '获取数据报错',
+        type: 'error',
+      })
+    })
+
   } else {
     ElMessage({
       message: '用户未登录或登录失效',

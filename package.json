@@ -15,6 +15,7 @@
     "@element-plus/icons-vue": "^2.0.9",
     "echarts": "^5.4.0",
     "element-plus": "^2.2.17",
+    "md-editor-v3": "^2.7.2",
     "nprogress": "^0.2.0",
     "pinia": "^2.0.21",
     "vue": "^3.2.38",

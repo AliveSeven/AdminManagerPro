@@ -66,6 +66,11 @@ const router = createRouter({
               name: 'Project',
               component: () => import('@/views/Personal/Project.vue')
             },
+            {
+              path: 'momentsEdit',
+              name: 'MomentsEdit',
+              component: () => import('@/views/Personal/MomentsEdit.vue')
+            },
           ]
         },
       ]

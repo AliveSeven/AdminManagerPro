@@ -4,7 +4,7 @@
       class="el-menu-vertical-demo"
       :default-active="route.path"
       text-color="#333639"
-      :default-openeds="['/home/system']"
+      :default-openeds="['/home/system','/home/personal']"
       style="height : 100vh"
       :collapse="state.isCollapse"
       :router = true
@@ -39,7 +39,8 @@
           <span class="title">个人事务管理</span>
         </template>
         <el-menu-item index="/home/personal/todoList"><el-icon><Finished /></el-icon>待办事项管理</el-menu-item>
-        <el-menu-item index="/home/personal/project"><el-icon><Finished /></el-icon>项目管理</el-menu-item>
+        <el-menu-item index="/home/personal/project"><el-icon><Histogram /></el-icon>项目管理</el-menu-item>
+        <el-menu-item index="/home/personal/momentsEdit"><el-icon><Edit /></el-icon>动态发布</el-menu-item>
       </el-sub-menu>
     </el-menu>
   </div>
@@ -48,7 +49,7 @@
 
 <script lang="ts" setup>
 import { useState } from '../stores/state'
-import { PieChart , Operation, Setting, HomeFilled, User, Finished } from '@element-plus/icons-vue'
+import { PieChart , Operation, Setting, HomeFilled, User, Finished, Histogram, Edit } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
