@@ -15,7 +15,7 @@ const router = createRouter({
       path : '/home',
       component : () => import('@/views/HomeView.vue'),
       redirect : '/login',
-      children : [
+      children : [  
         {
           path : 'dashBoard',
           name : 'DashBoard',
@@ -60,6 +60,11 @@ const router = createRouter({
               path: 'todoList',
               name: 'TodoList',
               component: () => import('@/views/Personal/TodoList.vue')
+            },
+            {
+              path: 'project',
+              name: 'Project',
+              component: () => import('@/views/Personal/Project.vue')
             },
           ]
         },

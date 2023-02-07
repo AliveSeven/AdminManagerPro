@@ -39,6 +39,7 @@
           <span class="title">个人事务管理</span>
         </template>
         <el-menu-item index="/home/personal/todoList"><el-icon><Finished /></el-icon>待办事项管理</el-menu-item>
+        <el-menu-item index="/home/personal/project"><el-icon><Finished /></el-icon>项目管理</el-menu-item>
       </el-sub-menu>
     </el-menu>
   </div>

@@ -60,7 +60,11 @@ export const useState = defineStore('useState',{
         nickname : '',
         avatarUrl : '',
       })
-      router.go(0)
+      router.push({path : '/login'})
+      // 加入宏任务，等所有任务执行完再重新加载页面
+      setTimeout(() => {
+        location.reload()
+      }, 100);
     },
 
     // 改变当前用户信息

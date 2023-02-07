@@ -80,7 +80,6 @@ const LoginOut = () =>{
     showLoginOut.value = false
     // 执行退出账号
     state.loginout()
-    router.push({path : '/login'})
 }
 
 </script>

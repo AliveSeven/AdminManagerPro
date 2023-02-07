@@ -240,3 +240,48 @@ export function deleteTodoList(id : number){
         }
     })
 }
+
+// 新增或者更新待办项目信息
+export function addOrUpdateProject(data : any){
+    return request({
+        url : '/project/save',
+        method : 'post',
+        data
+    })
+}
+
+// 根据userId查询全部项目
+export function getProjectByUserId(userId : number){
+    return request({
+        url : '/project/getByUserId',
+        method : 'get',
+        params : {
+            userId
+        }
+    })
+}
+
+// 获取待办事项分页
+export function getProjectPage(pageNum : number, pageSize : number, userId : number , name? : string){
+    return request({
+        url : '/project/page',
+        method : 'get',
+        params : {
+            pageNum,
+            pageSize,
+            userId,
+            name
+        }
+    })
+}
+
+// 根据id删除待办事项
+export function deleteProject(id : number){
+    return request({
+        url : '/project/delete',
+        method : 'post',
+        params : {
+            id
+        }
+    })
+}
