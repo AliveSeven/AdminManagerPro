@@ -41,6 +41,7 @@
         <el-menu-item index="/home/personal/todoList"><el-icon><Finished /></el-icon>待办事项管理</el-menu-item>
         <el-menu-item index="/home/personal/project"><el-icon><Histogram /></el-icon>项目管理</el-menu-item>
         <el-menu-item index="/home/personal/momentsEdit"><el-icon><Edit /></el-icon>动态发布</el-menu-item>
+        <el-menu-item index="/home/personal/favorites"><el-icon><StarFilled /></el-icon>收藏夹</el-menu-item>
       </el-sub-menu>
     </el-menu>
   </div>
@@ -49,7 +50,7 @@
 
 <script lang="ts" setup>
 import { useState } from '../stores/state'
-import { PieChart , Operation, Setting, HomeFilled, User, Finished, Histogram, Edit } from '@element-plus/icons-vue'
+import { PieChart , Operation, Setting, HomeFilled, User, Finished, Histogram, Edit , StarFilled } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router';
 
 const route = useRoute();

@@ -71,6 +71,11 @@ const router = createRouter({
               name: 'MomentsEdit',
               component: () => import('@/views/Personal/MomentsEdit.vue')
             },
+            {
+              path: 'favorites',
+              name: 'Favorites',
+              component: () => import('@/views/Personal/Favorites.vue')
+            },
           ]
         },
       ]
