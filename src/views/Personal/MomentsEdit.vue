@@ -6,36 +6,71 @@
         <div class="moments-title">
             <el-input v-model="title" placeholder="请输入文章标题" size="large" />
         </div>
-        <md-editor v-model="state.text" :preview-theme="state.theme" :footers="footers" class="editer" >
-            <template #defFooters>
-                <span>￥_￥</span>
-                <span>^_^</span>
-            </template>
-        </md-editor>
+            <div style="border: 1px solid #ccc">
+                <Toolbar
+                    style="border-bottom: 1px solid #ccc"
+                    :editor="editorRef"
+                    :defaultConfig="toolbarConfig"
+                    :mode="mode"
+                />
+                <Editor
+                    style="height: 500px; overflow-y: hidden;"
+                    v-model="valueHtml"
+                    :defaultConfig="editorConfig"
+                    :mode="mode"
+                    @onCreated="handleCreated"
+                />
+            </div>
+
         <div class="confirm">
-            <el-button type="success" plain>确认发布</el-button>
+            <el-button type="success" @click="getHtml" plain>确认发布</el-button>
             <el-button type="danger" plain>清空</el-button>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { reactive , ref } from 'vue';
-import MdEditor from 'md-editor-v3';
-import 'md-editor-v3/lib/style.css';
-import type { Footers } from 'md-editor-v3';
+import '@wangeditor/editor/dist/css/style.css' // 引入 css
+import { onBeforeUnmount, ref, shallowRef, onMounted , reactive } from 'vue'
+import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
 
-const state = reactive({
-  text: '',
-  theme: 'vuepress',
-});
+// 编辑器实例，必须用 shallowRef
+const editorRef = shallowRef()
+
+// 内容 HTML
+const valueHtml = ref('<p>hello</p>')
+
+// 编写模式
+const mode = 'default'
+
+// 模拟 ajax 异步获取内容
+onMounted(() => {
+    setTimeout(() => {
+        valueHtml.value = '<p>模拟 Ajax 异步设置内容</p>'
+    }, 1500)
+})
+
+const toolbarConfig = {}
+
+const editorConfig = { placeholder: '请输入内容...' }
+
+// 组件销毁时，也及时销毁编辑器
+onBeforeUnmount(() => {
+    const editor = editorRef.value
+    if (editor == null) return
+    editor.destroy()
+})
+
+const handleCreated = (editor : any) => {
+  editorRef.value = editor // 记录 editor 实例，重要！
+}
+
+function getHtml(){
+    console.log("valueHtml",valueHtml)
+}
 
 // 文章标题
 const title = ref('')
-
-// markdown编辑器页脚
-const footers : Footers[] = ['markdownTotal', 0, '=', 1, 'scrollSwitch'];
-
 
 </script>
 

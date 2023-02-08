@@ -353,7 +353,7 @@ const formUserInfo = reactive({
 })
 
 // 根据id查找当前用户的数据
-function getCurrentUserById( id : number){
+function getCurrentUserById(id : number){
     getUserById(id).then((res) =>{
         if(res.code === '200'){
             // 赋值
