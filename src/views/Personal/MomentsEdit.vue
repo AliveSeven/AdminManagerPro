@@ -1,7 +1,7 @@
 <template>
     <div class="moments-edit" >
         <div class="moments-tip">
-            动态发布，请使用Markdown语法进行文章、动态的编写
+            动态发布，使用富文本进行文章、动态的编写
         </div>
         <div class="moments-title">
             <el-input v-model="title" placeholder="请输入文章标题" size="large" />
@@ -44,9 +44,9 @@ const valueHtml = ref('<p>hello</p>')
 const mode = 'default'
 
 // 模拟 ajax 异步获取内容
-onMounted(() => {
+onMounted(() => {   
     setTimeout(() => {
-        valueHtml.value = '<p>模拟 Ajax 异步设置内容</p>'
+        valueHtml.value = '<p><span style="color: rgb(27, 27, 27); font-size: 12px;"> 1、点击开启奖池按钮，在B、C、D档位选择小主心仪的奖池组合（A档是大奖服饰为固定奖励，无法选择哦），一共可以进行12次叶子翻面，每次翻面可获得自选奖池中的一项奖励。</span></p><p><span style="color: rgb(27, 27, 27); font-size: 12px;"> 2、每一次叶子翻面需要消耗一定的叶子，具体数量为0/6/15/25/35/45/55/70/85/100/115/130。</span></p>'
     }, 1500)
 })
 
