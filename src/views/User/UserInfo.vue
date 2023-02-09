@@ -402,7 +402,7 @@ nextTick(() =>{
   
 })
 
-// 获取相关信息
+// 获取当前用户的TodoList和Project相关信息
 function getCurrentUserInfo(){
   const userId = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string).id : null
   if(userId != null){
@@ -439,6 +439,7 @@ function getCurrentUserInfo(){
 onMounted(() => {
   // 获取pinia中的state数据
   // state.getCurrentUserInfo()
+  const userId = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string).id : null
   // 调用函数
   getCurrentUserById(state.currentUserInfo.id)
   // 获取全部代办事项

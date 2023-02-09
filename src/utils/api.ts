@@ -285,3 +285,34 @@ export function deleteProject(id : number){
         }
     })
 }
+
+// 新增或者更新待办收藏夹信息
+export function addOrUpdateFavorites(data : any){
+    return request({
+        url : '/favorites/save',
+        method : 'post',
+        data
+    })
+}
+
+// 根据userId查询收藏夹
+export function getFavoritesByUserId(userId : number){
+    return request({
+        url : '/favorites/getByUserId',
+        method : 'get',
+        params : {
+            userId
+        }
+    })
+}
+
+// 根据id删除收藏夹
+export function deleteFavorites(id : number){
+    return request({
+        url : '/favorites/delete',
+        method : 'post',
+        params : {
+            id
+        }
+    })
+}
