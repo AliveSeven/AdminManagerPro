@@ -286,7 +286,7 @@ export function deleteProject(id : number){
     })
 }
 
-// 新增或者更新待办收藏夹信息
+// 新增或者更新收藏夹信息
 export function addOrUpdateFavorites(data : any){
     return request({
         url : '/favorites/save',
@@ -310,6 +310,37 @@ export function getFavoritesByUserId(userId : number){
 export function deleteFavorites(id : number){
     return request({
         url : '/favorites/delete',
+        method : 'post',
+        params : {
+            id
+        }
+    })
+}
+
+// 新增或者更新视频收藏夹信息
+export function addOrUpdateFavoritesVideo(data : any){
+    return request({
+        url : '/favorites-video/save',
+        method : 'post',
+        data
+    })
+}
+
+// 根据pid查询视频收藏夹
+export function getFavoritesVideoByPid(pid : number){
+    return request({
+        url : '/favorites-video/getVideoByPid',
+        method : 'get',
+        params : {
+            pid
+        }
+    })
+}
+
+// 根据id删除视频收藏夹
+export function deleteFavoritesVideo(id : number){
+    return request({
+        url : '/favorites-video/delete',
         method : 'post',
         params : {
             id

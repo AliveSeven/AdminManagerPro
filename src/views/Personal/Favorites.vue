@@ -36,8 +36,9 @@
             </el-menu>
         </div>
 
-        <div class="favorites-main" v-show="showMain">
-            <component :is='component'></component>
+        <!-- 动态引入组件 -->
+        <div class="favorites-main" v-if="showMain">
+            <component :is='component' :menu="currentMyMenuItem" ></component>
         </div>
     </div>
 </template>
@@ -64,7 +65,7 @@ const showMain = ref(false);
 // 点击我创建的菜单触发事件
 const SelectMyMenuItem = (item : any) =>{
     currentMyMenuItem.value = item
-    console.log(currentMyMenuItem)
+    // console.log(currentMyMenuItem)
     showMain.value = true
 }
 
@@ -90,7 +91,6 @@ onMounted(() =>{
         getFavoritesByUserId(userId).then((res) =>{
             if(res.code === '200'){
                 myFavorites.value = res.data
-                console.log(res)
             }
         })
     }

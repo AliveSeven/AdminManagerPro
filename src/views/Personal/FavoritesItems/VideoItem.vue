@@ -16,8 +16,18 @@
         </div>
 
         <div class="main-content">
-            <div class="">
-
+            <div class="video" v-for="(item, index) in videos" :key="index">
+                <div class="img-wrap">
+                    <el-image :src="item.cover" lazy></el-image>
+                    <div class="meta-mask">
+                        <div class="meta-info">
+                            <p class="view">播放：{{ item.playNum }}</p>
+                            <p class="favorite">收藏：{{ item.collectionNum }}</p>
+                            <p class="author">发布者：{{ item.author }}</p>
+                        </div>
+                    </div>
+                </div>
+                <p>{{ item.title }}</p>
             </div>
         </div>
     </div>
@@ -25,6 +35,7 @@
 
 <script setup lang="ts">
 import { reactive, ref, onMounted } from 'vue'
+import { getFavoritesVideoByPid } from '@/utils/api'
 
 const props = defineProps({
     menu : {
@@ -38,13 +49,32 @@ const props = defineProps({
     }
 })
 
-onMounted(() =>{
+const videos = ref(
+    [
+        {
+                cover : '',
+                url : '',
+                data : '',
+                description : '',
+                title : '',
+                playNum : 1000,
+                collectionNum : 100000,
+                author : 'AliveSeven'
+        }
+    ]
+)
 
+onMounted(() =>{
+    // 根据pid获取当前收藏夹的Video
+    getFavoritesVideoByPid(props.menu.id).then((res) =>{
+        videos.value = res.data
+    })
 })
 
 </script>
 
 <style lang="less" scoped>
+
 .main-top{
     padding: 20px;
     height: 150px;
@@ -97,6 +127,64 @@ onMounted(() =>{
         bottom: 0;
         background-color: rgba(0,0,0,.5);
         z-index: 0;
+    }
+}
+
+.main-content{
+    padding-left: 20px;
+    display: flex;
+    flex-wrap: wrap;
+
+    .video{
+        width: 150px;
+        margin: 10px;
+        padding-right: 10px;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+
+        .img-wrap{
+            width: 150px;
+            height: 150px;
+            border-radius: 5px;
+            position: relative;
+
+            &:hover{
+                .meta-mask{
+                    opacity: 1;
+                }
+            }
+        }
+
+        p{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            font-size: 14px;
+        }
+
+        .meta-mask{
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 4;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            background-color: rgba(0,0,0,.45);
+            color: #e5e9ef;
+            transition: opacity .2s ease;
+
+            .meta-info{
+                position: absolute;
+                top: 50%;
+                left: 15px;
+                transform: translateY(-50%);
+            }
+        }
+
     }
 }
 </style>
