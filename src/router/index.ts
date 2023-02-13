@@ -83,6 +83,16 @@ const router = createRouter({
             },
           ]
         },
+        {
+          path : 'shop',
+          name : 'Shop',
+          component : () => import('@/views/Pay/Shop.vue'),
+        },
+        {
+          path : 'socket',
+          name : 'Socket',
+          component : () => import('@/views/Socket/Socket.vue'),
+        },
       ]
     },
     {
@@ -162,6 +172,5 @@ const setRouter = () =>{
     
   }
 }
-
 
 export default router

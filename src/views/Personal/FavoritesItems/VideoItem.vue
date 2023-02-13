@@ -24,6 +24,7 @@
                             <p class="view">播放：{{ item.playNum }}</p>
                             <p class="favorite">收藏：{{ item.collectionNum }}</p>
                             <p class="author">发布者：{{ item.author }}</p>
+                            <p class="data">投稿：{{ item.data }}</p>
                         </div>
                     </div>
                 </div>
@@ -54,12 +55,12 @@ const videos = ref(
         {
                 cover : '',
                 url : '',
-                data : '',
                 description : '',
                 title : '',
                 playNum : 1000,
                 collectionNum : 100000,
-                author : 'AliveSeven'
+                author : 'AliveSeven',
+                data : '2023-01-01'
         }
     ]
 )
@@ -163,6 +164,7 @@ onMounted(() =>{
             -webkit-box-orient: vertical;
             -webkit-line-clamp: 2;
             font-size: 14px;
+            line-height: 12px;
         }
 
         .meta-mask{

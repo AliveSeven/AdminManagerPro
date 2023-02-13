@@ -44,6 +44,14 @@
         <el-menu-item index="/home/personal/textEdit"><el-icon><EditPen /></el-icon>Markdown</el-menu-item>
         <el-menu-item index="/home/personal/favorites"><el-icon><StarFilled /></el-icon>收藏夹</el-menu-item>
       </el-sub-menu>
+      <el-menu-item index="/home/shop" class="title">
+        <el-icon><Goods /></el-icon>
+        <span class="title">商店</span>
+      </el-menu-item>
+      <el-menu-item index="/home/socket" class="title">
+        <el-icon><Memo /></el-icon>
+        <span class="title">在线聊天室</span>
+      </el-menu-item>
     </el-menu>
   </div>
 
@@ -51,7 +59,7 @@
 
 <script lang="ts" setup>
 import { useState } from '../stores/state'
-import { PieChart , Operation, Setting, HomeFilled, User, Finished, Histogram, Edit , StarFilled, EditPen } from '@element-plus/icons-vue'
+import { PieChart , Operation, Setting, HomeFilled, User, Finished, Histogram, Edit , StarFilled, EditPen , Goods, Memo } from '@element-plus/icons-vue'
 import { useRoute } from 'vue-router';
 
 const route = useRoute();

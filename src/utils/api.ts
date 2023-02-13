@@ -347,3 +347,18 @@ export function deleteFavoritesVideo(id : number){
         }
     })
 }
+
+// 获取商品分页
+export function getGoodsPage(pageNum : number, pageSize : number , name? : string){
+    return request({
+        url : '/goods/page',
+        method : 'get',
+        params : {
+            pageNum,
+            pageSize,
+            name
+        }
+    })
+}
+
+
