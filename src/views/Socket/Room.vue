@@ -41,7 +41,6 @@ export default {
     return {
       circleUrl: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
       user: {},
-      isCollapse: false,
       users: [],
       chatUser: '',
       text: "",
@@ -67,7 +66,11 @@ export default {
           console.log("您的浏览器支持WebSocket");
           // 组装待发送的消息 json
           // {"from": "zhang", "to": "admin", "text": "聊天文本"}
-          let message = {from: this.user.username, to: this.chatUser, text: this.text}
+          let message = {
+            from: this.user.username, 
+            to: this.chatUser, 
+            text: this.text
+          }
           socket.send(JSON.stringify(message));  // 将组装好的json发送给服务端，由服务端进行转发
           this.messages.push({user: this.user.username, text: this.text})
           // 构建消息内容，本人消息

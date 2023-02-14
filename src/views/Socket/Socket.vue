@@ -4,18 +4,30 @@
             <div class="avatar">
                 <el-image :src="currentAvatar" lazy></el-image>
             </div>
+            <div class="icon" :class="{'active' : activeIcon == item.active}" v-for="(item, index) in leftIcons" @click="clickIcon(item.active)" :key="index">
+                <el-icon>
+                    <component :is='item.icon'></component>
+                </el-icon>
+            </div>
         </div>
         <div class="room-user">
             <div class="title">
                 当前用户列表
             </div>
             <div class="user">
-
+                <div class="item">
+                    <el-image :src="currentAvatar" lazy></el-image>
+                    <span>群聊</span>
+                </div>
+                <div class="item" v-for="(item, index) in currentUsers" :key="index" @click="chat(item)" :class="{'active' : item.userId == activeUserId}">
+                    <el-icon :size="30"><User /></el-icon>
+                    <span>{{ item.username }}</span>
+                </div>
             </div>
         </div>
         <div class="room">
             <div class="title">
-                聊天室()
+                聊天室({{ currentUsers.length + 1 }}) 
             </div>
             <div class="center">
                 <ul class="join">
@@ -67,7 +79,144 @@ const handleCreated = (editor : any) => {
 }
 
 // 当前用户的头像
-const currentAvatar = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string).avatar : ''
+const currentAvatar = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string).avatarUrl : ''
+
+// 左边框栏目
+const leftIcons = ref([
+    {
+        icon : 'ChatLineRound',
+        desc : '群聊',
+        active : 'chatline'
+    },
+    {
+        icon : 'User',
+        desc : '个人',
+        active : 'personal'
+    }
+])
+
+// 正在激活的选项
+const activeIcon = ref('chatline')
+
+// 点击左边icon
+const clickIcon = (val : any) =>{
+    activeIcon.value = val
+}
+
+// 当前用户列表
+const currentUsers = ref([
+    {
+        userId : 111,
+        username : ''
+    }
+])
+
+// 正在激活的聊天
+const activeUserId = ref()
+
+// 聊天的user
+const chatUser = ref('')
+
+// 聊天信息数组
+const messages = []
+
+// 聊天内容
+const content = ref('')
+
+let socket : any
+function init(){
+    const user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user") as string) : {}
+    // 用户名
+    let username = user.username
+    // 当前用户的id
+    let userId = user.id
+    if(typeof(WebSocket) == "undefined"){
+        console.log("您的浏览器不支持WebSocket");
+    } else {
+        console.log("您的浏览器支持WebSocket");
+        let socketUrl = "ws://localhost:8000/imserver/" + username + '/' + userId;
+        if (socket != null) {
+          socket.close();
+          socket = null;
+        }
+
+        // 开启一个websocket服务
+        socket = new WebSocket(socketUrl);
+        // 打开事件
+        socket.onopen = function () {
+          console.log("websocket已打开");
+        };
+
+        //  浏览器端收消息，获得从服务端发送过来的文本消息
+        socket.onmessage = function (msg : any) {
+          console.log("====收到数据====" + msg.data)
+          let data = JSON.parse(msg.data)  // 对收到的json数据进行解析， 类似这样的： {"users": [{"username": "zhang"},{ "username": "admin"}]}
+          console.log("data",data)
+          if (data.users) {  // 获取在线人员信息
+            currentUsers.value = data.users.filter((user : any) => user.username !== username)  // 获取当前连接的所有用户信息，并且排除自身，自己不会出现在自己的聊天列表里
+          } else {
+            // 如果服务器端发送过来的json数据 不包含 users 这个key，那么发送过来的就是聊天文本json数据
+            //  // {"from": "zhang", "text": "hello"}
+            if (data.from === chatUser.value) {
+              messages.push(data)
+              // 构建消息内容
+              createContent(data.from, null, data.text)
+            }
+          }
+        };
+
+        //关闭事件
+        socket.onclose = function () {
+          console.log("websocket已关闭");
+        };
+
+        //发生了错误事件
+        socket.onerror = function () {
+          console.log("websocket发生了错误");
+        }
+    }
+}
+
+function createContent(remoteUser : any, nowUser : any, text : string) {  // 这个方法是用来将 json的聊天消息数据转换成 html的。
+  let html
+  // 当前用户消息
+  if (nowUser) { // nowUser 表示是否显示当前用户发送的聊天消息，绿色气泡
+    html = "<div class=\"el-row\" style=\"padding: 5px 0\">\n" +
+        "  <div class=\"el-col el-col-22\" style=\"text-align: right; padding-right: 10px\">\n" +
+        "    <div class=\"tip left\">" + text + "</div>\n" +
+        "  </div>\n" +
+        "  <div class=\"el-col el-col-2\">\n" +
+        "  <span class=\"el-avatar el-avatar--circle\" style=\"height: 40px; width: 40px; line-height: 40px;\">\n" +
+        "    <img src=\"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png\" style=\"object-fit: cover;\">\n" +
+        "  </span>\n" +
+        "  </div>\n" +
+        "</div>";
+  } else if (remoteUser) {   // remoteUser表示远程用户聊天消息，蓝色的气泡
+    html = "<div class=\"el-row\" style=\"padding: 5px 0\">\n" +
+        "  <div class=\"el-col el-col-2\" style=\"text-align: right\">\n" +
+        "  <span class=\"el-avatar el-avatar--circle\" style=\"height: 40px; width: 40px; line-height: 40px;\">\n" +
+        "    <img src=\"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png\" style=\"object-fit: cover;\">\n" +
+        "  </span>\n" +
+        "  </div>\n" +
+        "  <div class=\"el-col el-col-22\" style=\"text-align: left; padding-left: 10px\">\n" +
+        "    <div class=\"tip right\">" + text + "</div>\n" +
+        "  </div>\n" +
+        "</div>";
+  }
+  console.log(html)
+  content.value += html;
+}
+
+// 点对点聊天
+function chat(user : any){
+    chatUser.value = user.username
+    activeUserId.value = user.userId
+    console.log('点对点聊天')
+}
+
+onMounted(() => {
+    init()
+})
 
 </script>
 
@@ -86,6 +235,31 @@ const currentAvatar = localStorage.getItem("user") ? JSON.parse(localStorage.get
         flex-direction: column;
         align-items: center;
         padding-top: 10px;
+
+        .avatar{
+            width: 50px;
+            height: 50px;
+        }
+
+        .icon{
+            width: 50px;
+            height: 50px;
+            font-size: 30px;
+            display: flex;   
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: #fff;
+            transition: .3s;
+
+            &:hover{
+                background-color: rgb(147, 113, 200);
+            }
+
+            &.active{
+                color: rgb(175, 127, 219);
+            }
+        }
     }
 
     .room-user{
@@ -107,6 +281,34 @@ const currentAvatar = localStorage.getItem("user") ? JSON.parse(localStorage.get
 
         .user{
             flex: 1;
+
+            .item{
+                display: flex;
+                height: 50px;
+                margin-top: 2px;
+                cursor: pointer;
+                transition: .3s;
+
+                span{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    margin-left: 20px;
+                }
+
+                &:hover{
+                    background-color: rgb(175, 127, 219);;
+                }
+
+                &.active{
+                    background-color: rgb(175, 127, 219);;
+                }
+
+                .el-icon{
+                    height: 100%;
+                    margin-left: 10px;
+                }
+            }
         }
     }
 
