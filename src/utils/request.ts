@@ -1,7 +1,8 @@
 import axios from 'axios'
 import router from "@/router";
-import NProgress from 'nprogress'
-import 'nprogress/nprogress.css'
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
+import { useState } from '@/stores/state'
 
 const request = axios.create({
     baseURL: "http://localhost:8000",
@@ -11,11 +12,11 @@ const request = axios.create({
 // 处理  类型“AxiosResponse<any, any>”上不存在属性“xxxx”。ts(2339) 关键一步。
 declare module "axios" {
     interface AxiosResponse<T = any> {
-      total: number
-      records: any
-      code : any
-      msg : string
-      // 这里追加你的参数
+        total: number
+        records: any
+        code: any
+        msg: string
+        // 这里追加你的参数
     }
     export function create(config?: AxiosRequestConfig): AxiosInstance;
 }
@@ -40,6 +41,7 @@ request.interceptors.request.use(config => {
 // 可以在接口响应后统一处理结果
 request.interceptors.response.use(
     response => {
+        const state = useState();
         let res = response.data;
         // 如果是返回的文件
         if (response.config.responseType === 'blob') {
@@ -51,18 +53,15 @@ request.interceptors.response.use(
         }
         // 当权限验证不通过的时候给出提示
         if (res.code === '401') {
-            // ElementUI.Message({
-            //     message: res.msg,
-            //     type: 'error'
-            // });
+            state.remindElMessage(res.msg, 2);
             router.push("/login")
         }
         if (res.code === '404') {
-            // ElementUI.Message({
-            //     message: res.msg,
-            //     type: 'error'
-            // });
+            state.remindElMessage(res.msg, 2);
             router.push("/404")
+        }
+        if (res.code === '600') {
+            state.remindElMessage('用户名或密码错误', 2);
         }
         NProgress.done();
         return res;
@@ -72,7 +71,7 @@ request.interceptors.response.use(
         NProgress.done();
         return Promise.reject(error)
     }
-    
+
 )
 
 export default request

@@ -10,7 +10,6 @@
       <el-header style="text-align: right; font-size: 12px" class="to-header">
         <Header></Header>
       </el-header>
-      <!-- <el-divider style="margin : 10px; width : 95%; " /> -->
 
       <el-main class="main-container">
         <el-scrollbar>
